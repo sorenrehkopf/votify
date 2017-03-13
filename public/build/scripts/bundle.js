@@ -26752,11 +26752,7 @@
 		function Admin() {
 			_classCallCheck(this, Admin);
 
-			var _this = _possibleConstructorReturn(this, (Admin.__proto__ || Object.getPrototypeOf(Admin)).call(this));
-
-			_this.hello = "hello hey wow!";
-			_this.things = ['hey!', 'hello!', 'wow'];
-			return _this;
+			return _possibleConstructorReturn(this, (Admin.__proto__ || Object.getPrototypeOf(Admin)).call(this));
 		}
 
 		_createClass(Admin, [{
@@ -26767,22 +26763,15 @@
 		}, {
 			key: 'render',
 			value: function render() {
-				var things = this.things.map(function (thing, i) {
-					return _react2.default.createElement(
-						'h3',
-						{ key: i },
-						thing
-					);
-				});
 				return _react2.default.createElement(
 					'div',
-					{ id: 'admin!' },
+					null,
 					_react2.default.createElement(
 						'h1',
 						null,
 						'Welcome to the admin'
 					),
-					things
+					_react2.default.createElement('iframe', { src: 'https://embed.spotify.com/?uri=spotify:user:122841543:playlist:1cbrPTCufxieRgxz3jLb92', width: '500', height: '380', frameBorder: '0', allowTransparency: 'true' })
 				);
 			}
 		}]);

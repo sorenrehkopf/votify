@@ -4,10 +4,15 @@ var server = module.exports = require('http').Server(app);
 var bodyParser = require('body-parser');
 var cors = require('cors');
 
+require('dotenv').config();
+
 app.use(cors());
 app.use(bodyParser.json());
 
 app.use(express.static('public'));
+
+var session = require('./middleware/session.js');
+app.use(session);
 
 var apiController = require(__dirname+'/controllers/api.js');
 // var socketController = require(__dirname+'/controllers/socket.js');
