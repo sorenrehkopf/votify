@@ -1,5 +1,14 @@
 body {
-  background-color: green; }
-  body .wrapper {
-    width: 500px;
-    overflow: hidden; }
+  margin: 0;
+  background-color: pink;
+  font: 100%/1.2 'Open Sans', sans-serif; }
+
+#app {
+  margin: 0 auto; }
+
+main {
+  padding: 1em; }
+  main h1 {
+    font-size: 3em;
+    text-align: center;
+    font-family: "Audiowide", cursive; }

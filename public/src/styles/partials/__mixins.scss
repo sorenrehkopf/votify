@@ -1,0 +1,53 @@
+// RESPONSIVE BREAKPOINTS
+$mobile: 599px;
+$tablet__portrait: 767px;
+$tablet__landscape: 1023px;
+$desktop: 1200px;
+
+$breakpoints: (
+  'mobile': ( max-width: $mobile ),
+  'mobile--up': ( min-width: $mobile + 1px ),
+  'tablet__portrait': ( min-width: $tablet__portrait + 1px ),
+  'tablet__landscape': ( min-width: $tablet__landscape + 1px ),
+  'desktop': ( min-width: $desktop )
+) !default;
+
+@mixin breakpoint($breakpoint) {
+  //if key exists in map
+  @if map-has-key($breakpoints, $breakpoint) {
+    // Prints media query based on value
+    @media #{inspect(map-get($breakpoints, $breakpoint))} {
+      @content;
+    }
+  }
+  @else {
+    @warn "breakpoint value cannot be found from '#{$breakpoint}'. "
+      + "Available breakpoints are: #{map-keys($breakpoints)}.";
+  }
+}
+
+@mixin for-IE-only {
+  @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    /* IE10+ CSS styles go here */
+    @content;
+  }
+}
+
+@mixin for-Edge-only {
+  @supports (-ms-ime-align:auto) {
+  /* IE Edge 12+ CSS styles go here */
+    @content;
+  }
+}
+
+@mixin mobile--only {
+  @media only screen and (max-width: $tablet__portrait) {
+    @content;
+  }
+}
+
+@mixin mobile__landscape--only {
+  @media only screen and (max-width: $tablet__portrait) and (orientation: landscape) {
+    @content;
+  }
+}
