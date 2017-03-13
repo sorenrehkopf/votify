@@ -4,10 +4,8 @@ import { Link } from 'react-router';
 class Main extends Component {
 	render(){
 		return(
-			<div>
-				<div id="app">
-					{this.props.children}
-				</div>
+			<div className="wrapper">
+				{this.props.children}
 			</div>
 		)
 	};

@@ -62,11 +62,11 @@
 
 	var _dataVisualsComponent2 = _interopRequireDefault(_dataVisualsComponent);
 
-	var _adminComponent = __webpack_require__(235);
+	var _adminComponent = __webpack_require__(236);
 
 	var _adminComponent2 = _interopRequireDefault(_adminComponent);
 
-	var _voteComponent = __webpack_require__(236);
+	var _voteComponent = __webpack_require__(237);
 
 	var _voteComponent2 = _interopRequireDefault(_voteComponent);
 
@@ -26596,12 +26596,8 @@
 			value: function render() {
 				return _react2.default.createElement(
 					'div',
-					null,
-					_react2.default.createElement(
-						'div',
-						{ id: 'app' },
-						this.props.children
-					)
+					{ className: 'wrapper' },
+					this.props.children
 				);
 			}
 		}]);
@@ -26629,6 +26625,10 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _songComponent = __webpack_require__(235);
+
+	var _songComponent2 = _interopRequireDefault(_songComponent);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -26643,16 +26643,27 @@
 		function DataVisuals() {
 			_classCallCheck(this, DataVisuals);
 
-			return _possibleConstructorReturn(this, (DataVisuals.__proto__ || Object.getPrototypeOf(DataVisuals)).apply(this, arguments));
+			var _this = _possibleConstructorReturn(this, (DataVisuals.__proto__ || Object.getPrototypeOf(DataVisuals)).call(this));
+
+			_this.songs = ['bohemian rhapsody', 'another one bites the dust'];
+			return _this;
 		}
 
 		_createClass(DataVisuals, [{
 			key: 'render',
 			value: function render() {
+				var songs = this.songs.map(function (song, i) {
+					return _react2.default.createElement(_songComponent2.default, { songName: song, key: i });
+				});
 				return _react2.default.createElement(
-					'h1',
+					'div',
 					null,
-					'Welcome to the data visualization'
+					_react2.default.createElement(
+						'h1',
+						null,
+						'Welcome to the data visualization'
+					),
+					songs
 				);
 			}
 		}]);
@@ -26686,22 +26697,92 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var Song = function (_Component) {
+		_inherits(Song, _Component);
+
+		function Song() {
+			_classCallCheck(this, Song);
+
+			return _possibleConstructorReturn(this, (Song.__proto__ || Object.getPrototypeOf(Song)).apply(this, arguments));
+		}
+
+		_createClass(Song, [{
+			key: 'render',
+			value: function render() {
+				return _react2.default.createElement(
+					'h1',
+					null,
+					this.props.songName + this.props.songName
+				);
+			}
+		}]);
+
+		return Song;
+	}(_react.Component);
+
+	exports.default = Song;
+
+/***/ },
+/* 236 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 	var Admin = function (_Component) {
 		_inherits(Admin, _Component);
 
 		function Admin() {
 			_classCallCheck(this, Admin);
 
-			return _possibleConstructorReturn(this, (Admin.__proto__ || Object.getPrototypeOf(Admin)).apply(this, arguments));
+			var _this = _possibleConstructorReturn(this, (Admin.__proto__ || Object.getPrototypeOf(Admin)).call(this));
+
+			_this.hello = "hello hey wow!";
+			_this.things = ['hey!', 'hello!', 'wow'];
+			return _this;
 		}
 
 		_createClass(Admin, [{
+			key: 'componentWillMount',
+			value: function componentWillMount() {
+				console.log('mounting!!');
+			}
+		}, {
 			key: 'render',
 			value: function render() {
+				var things = this.things.map(function (thing, i) {
+					return _react2.default.createElement(
+						'h3',
+						{ key: i },
+						thing
+					);
+				});
 				return _react2.default.createElement(
-					'h1',
-					null,
-					'Welcome to the admin'
+					'div',
+					{ id: 'admin!' },
+					_react2.default.createElement(
+						'h1',
+						null,
+						'Welcome to the admin'
+					),
+					things
 				);
 			}
 		}]);
@@ -26712,7 +26793,7 @@
 	exports.default = Admin;
 
 /***/ },
-/* 236 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
