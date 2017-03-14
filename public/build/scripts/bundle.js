@@ -66,7 +66,7 @@
 
 	var _adminComponent2 = _interopRequireDefault(_adminComponent);
 
-	var _voteComponent = __webpack_require__(237);
+	var _voteComponent = __webpack_require__(238);
 
 	var _voteComponent2 = _interopRequireDefault(_voteComponent);
 
@@ -26738,6 +26738,10 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _spotifyService = __webpack_require__(237);
+
+	var _spotifyService2 = _interopRequireDefault(_spotifyService);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -26761,6 +26765,11 @@
 				console.log('mounting!!');
 			}
 		}, {
+			key: 'getPlaylists',
+			value: function getPlaylists() {
+				_spotifyService2.default.getPlaylists();
+			}
+		}, {
 			key: 'render',
 			value: function render() {
 				return _react2.default.createElement(
@@ -26770,6 +26779,29 @@
 						'h1',
 						null,
 						'Welcome to the admin'
+					),
+					_react2.default.createElement(
+						'a',
+						{ href: '/api/auth/login' },
+						_react2.default.createElement(
+							'button',
+							null,
+							'Log me in with spotify!'
+						)
+					),
+					_react2.default.createElement(
+						'a',
+						{ href: '/api/auth/logout' },
+						_react2.default.createElement(
+							'button',
+							null,
+							'Log me out!'
+						)
+					),
+					_react2.default.createElement(
+						'button',
+						{ onClick: this.getPlaylists },
+						'Get playlists!'
 					),
 					_react2.default.createElement('iframe', { src: 'https://embed.spotify.com/?uri=spotify:user:122841543:playlist:1cbrPTCufxieRgxz3jLb92', width: '500', height: '380', frameBorder: '0', allowTransparency: 'true' })
 				);
@@ -26783,6 +26815,44 @@
 
 /***/ },
 /* 237 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var SpotifyService = function () {
+		function SpotifyService() {
+			_classCallCheck(this, SpotifyService);
+		}
+
+		_createClass(SpotifyService, null, [{
+			key: 'getPlaylists',
+			value: function getPlaylists() {
+				var http = new XMLHttpRequest();
+				http.open('GET', '/api/spotify/getPlaylists');
+				http.send(null);
+				http.onreadystatechange = function () {
+					if (http.readyState === 4) {
+						if (http.status === 200) console.log(http.response);else console.log('error ' + http.status);
+					}
+				};
+			}
+		}]);
+
+		return SpotifyService;
+	}();
+
+	exports.default = SpotifyService;
+
+/***/ },
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

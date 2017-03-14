@@ -15,9 +15,13 @@ var session = require('./middleware/session.js');
 app.use(session);
 
 var apiController = require(__dirname+'/controllers/api.js');
+var authController = require(__dirname+'/controllers/auth.js');
+var spotifyController = require(__dirname+'/controllers/spotify.js');
 // var socketController = require(__dirname+'/controllers/socket.js');
 // app.use('/api/namespaces',socketController);
 app.use('/api',apiController);
+app.use('/api/auth',authController);
+app.use('/api/spotify',spotifyController);
 
 app.get('*',function(req,res){
 	res.sendFile(__dirname+'/public/index.html');

@@ -1,24 +1,16 @@
-var authCode;
+var SpotifyWebApi = require('spotify-web-api-node');
 
-var session = new Session(authCode);
+var spotifyApi = new SpotifyWebApi({
+	clientId:process.env.spotify_id,
+	clientSecret:process.env.spotify_secret,
+	redirectUri:process.env.spotify_redirect_uri
+});
 
 function sessionAuth(req,res,next){
 	if(req){
-		req.session = session;
+		req.spotifyApi = spotifyApi;
 	}
 	next();
-}
-
-function Session(code){
-
-	this.code = code;
-
-	this.setAuthCode = function(code){
-		this.code = code;
-	}
-	this.getAuthCode = function(){
-		return this.code;
-	}
 }
 
 module.exports = sessionAuth;
