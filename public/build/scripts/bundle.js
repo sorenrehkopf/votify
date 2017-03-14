@@ -66,7 +66,7 @@
 
 	var _adminComponent2 = _interopRequireDefault(_adminComponent);
 
-	var _voteComponent = __webpack_require__(238);
+	var _voteComponent = __webpack_require__(239);
 
 	var _voteComponent2 = _interopRequireDefault(_voteComponent);
 
@@ -26742,6 +26742,10 @@
 
 	var _spotifyService2 = _interopRequireDefault(_spotifyService);
 
+	var _httpService = __webpack_require__(238);
+
+	var _httpService2 = _interopRequireDefault(_httpService);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -26756,22 +26760,70 @@
 		function Admin() {
 			_classCallCheck(this, Admin);
 
-			return _possibleConstructorReturn(this, (Admin.__proto__ || Object.getPrototypeOf(Admin)).call(this));
+			var _this = _possibleConstructorReturn(this, (Admin.__proto__ || Object.getPrototypeOf(Admin)).call(this));
+
+			_this.state = {
+				playlists: []
+			};
+			return _this;
 		}
 
 		_createClass(Admin, [{
 			key: 'componentWillMount',
 			value: function componentWillMount() {
-				console.log('mounting!!');
+				var thiz = this;
+				if (window.location.search) {
+					var token = window.location.search.replace('?auth_token=', '');
+					window.localStorage.setItem('auth_token', token);
+					window.location.href = window.location.origin + window.location.pathname;
+				}
+				(0, _httpService2.default)({
+					method: 'GET',
+					url: '/api/auth/check'
+				}).then(function (resp) {
+					console.log(resp);
+					if (!resp.data) window.location.href = '/api/auth/login';else {
+						_spotifyService2.default.getPlaylists().then(function (resp) {
+							console.log(resp.data);
+							thiz.setState({ playlists: resp.data.items });
+							console.log(thiz.state);
+						});
+					}
+				}).catch(function (err) {
+					console.log(err);
+				});
 			}
 		}, {
 			key: 'getPlaylists',
 			value: function getPlaylists() {
-				_spotifyService2.default.getPlaylists();
+				var thiz = this;
+				_spotifyService2.default.getPlaylists().then(function (resp) {
+					console.log(resp.data);
+					thiz.setState({ playlists: resp.data.items });
+					console.log(thiz.state);
+				});
+			}
+		}, {
+			key: 'logout',
+			value: function logout() {
+				(0, _httpService2.default)({
+					method: 'GET',
+					url: '/api/auth/logout'
+				}).then(function (data) {
+					window.localStorage.removeItem('auth_token');
+					window.location.href = '/';
+				});
 			}
 		}, {
 			key: 'render',
 			value: function render() {
+				var playlists = this.state.playlists.map(function (pl, i) {
+					return _react2.default.createElement(
+						'p',
+						{ key: i },
+						pl.name
+					);
+				});
 				return _react2.default.createElement(
 					'div',
 					null,
@@ -26781,29 +26833,16 @@
 						'Welcome to the admin'
 					),
 					_react2.default.createElement(
-						'a',
-						{ href: '/api/auth/login' },
-						_react2.default.createElement(
-							'button',
-							null,
-							'Log me in with spotify!'
-						)
-					),
-					_react2.default.createElement(
-						'a',
-						{ href: '/api/auth/logout' },
-						_react2.default.createElement(
-							'button',
-							null,
-							'Log me out!'
-						)
+						'button',
+						{ onClick: this.logout },
+						'Log me out!'
 					),
 					_react2.default.createElement(
 						'button',
-						{ onClick: this.getPlaylists },
+						{ onClick: this.getPlaylists.bind(this) },
 						'Get playlists!'
 					),
-					_react2.default.createElement('iframe', { src: 'https://embed.spotify.com/?uri=spotify:user:122841543:playlist:1cbrPTCufxieRgxz3jLb92', width: '500', height: '380', frameBorder: '0', allowTransparency: 'true' })
+					playlists
 				);
 			}
 		}]);
@@ -26815,7 +26854,7 @@
 
 /***/ },
 /* 237 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -26824,6 +26863,12 @@
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _httpService = __webpack_require__(238);
+
+	var _httpService2 = _interopRequireDefault(_httpService);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -26835,14 +26880,10 @@
 		_createClass(SpotifyService, null, [{
 			key: 'getPlaylists',
 			value: function getPlaylists() {
-				var http = new XMLHttpRequest();
-				http.open('GET', '/api/spotify/getPlaylists');
-				http.send(null);
-				http.onreadystatechange = function () {
-					if (http.readyState === 4) {
-						if (http.status === 200) console.log(http.response);else console.log('error ' + http.status);
-					}
-				};
+				return (0, _httpService2.default)({
+					method: 'GET',
+					url: '/api/spotify/getPlaylists'
+				});
 			}
 		}]);
 
@@ -26853,6 +26894,33 @@
 
 /***/ },
 /* 238 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	function Http(data) {
+		var authHeader = window.localStorage.getItem('auth_token');
+		return new Promise(function (resolve, reject) {
+			var http = new XMLHttpRequest();
+			var method = data.method;
+			http.open(data.method, data.url);
+			http.setRequestHeader('auth_token', authHeader);
+			http.send(null);
+			http.onreadystatechange = function () {
+				if (http.readyState === 4) {
+					if (http.status === 200) resolve({ data: JSON.parse(http.response) });else reject('error ' + http.status);
+				}
+			};
+		});
+	}
+
+	exports.default = Http;
+
+/***/ },
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

@@ -6,7 +6,8 @@ var state = "";
 
 router.get('/login',function(req,res){
 	var authUrl = req.spotifyApi.createAuthorizeURL(scopes,state);
-	res.redirect(authUrl);
+	if(req.session.getToken()) res.send('Someone else is acting as the admin for this session. Only one admin is permitted at a time.');
+	else res.redirect(authUrl);
 });
 
 router.get('/handleauth',function(req,res){
@@ -21,19 +22,28 @@ router.get('/handleauth',function(req,res){
 		    // Set the access token on the API object to use it in later calls
 		    req.spotifyApi.setAccessToken(data.body['access_token']);
 		    req.spotifyApi.setRefreshToken(data.body['refresh_token']);
-		    res.redirect('/admin');
+		    var token = req.session.setToken();
+		    res.redirect('http://localhost:3030/admin?auth_token='+token);
 		  }, function(err) {
 		    console.log('Something went wrong!', err);
 		  })
 		
 	}else{
 		console.log('error setting query');
+		res.send('error logging in');
 	}
 	
 });
 
-router.get('/logout',function(){
-	req.spotifyApi.resetCredentials();
+router.get('/check',function(req,res){
+	res.send(req.session.checkToken(req.headers.auth_token));
+});
+
+router.get('/logout',function(req,res){
+	req.spotifyApi.resetAccessToken();
+	req.spotifyApi.resetRefreshToken();
+	req.session.clearToken();
+	res.send({message:'logged out!'});
 })
 
 module.exports = router;
