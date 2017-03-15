@@ -42,7 +42,9 @@ router.get('/handleauth',function(req,res){
 
 router.get('/check',function(req,res){
 	var loggedIn = req.session.checkToken(req.headers.auth_token);
-	var resp = loggedIn?{toList:req.session.getToList(),fromList:votingService.fromList}:false;
+	console.log('loggedIn',loggedIn);
+	var resp = loggedIn?{toList:votingService.toList,fromList:req.session.getFromList()}:false;
+	console.log(resp);
 	res.send(resp);
 });
 

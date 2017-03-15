@@ -12,6 +12,7 @@ class PlayingList extends Component{
 			song:''
 		}
 		this.search;
+		this.playing;
 	}
 
 	createPlaylist(e){
@@ -39,17 +40,19 @@ class PlayingList extends Component{
 		}
 		var searchTerm = encodeURIComponent(e.nativeEvent.target.value);
 		var thiz = this;
-		this.search = setTimeout(function(){
-			Http({
-				method:'GET',
-				url:'https://api.spotify.com/v1/search?type=track&q='+searchTerm
-			},true).then(data=>{
-				console.log(data.data.tracks);
-				thiz.setState({
-					songs:data.data.tracks.items
-				});
-			}).catch(err=>{console.log(err)});
-		},600)
+		if(searchTerm){
+			this.search = setTimeout(function(){
+				Http({
+					method:'GET',
+					url:'https://api.spotify.com/v1/search?type=track&q='+searchTerm
+				},true).then(data=>{
+					console.log(data.data.tracks);
+					thiz.setState({
+						songs:data.data.tracks.items
+					});
+				}).catch(err=>{console.log(err)});
+			},600)
+		}
 	}
 
 	selectSong(e){
@@ -59,16 +62,20 @@ class PlayingList extends Component{
 		});
 	}
 
-	startBattle(){
+	startBattle(e){
 		console.log('starting song battle!');
-		Http({
-			method:'GET',
-			url:'/api/session/startSong'
-		}).then(resp=>{
-			console.log(resp);
-		}).catch(err=>{
-			console.log(err);
-		})
+		var thiz = this;
+		if(!this.playing){
+			Http({
+				method:'GET',
+				url:'/api/session/startSong'
+			}).then(resp=>{
+				console.log(resp);
+				thiz.playing = true;
+			}).catch(err=>{
+				console.log(err);
+			})
+		};
 	}
 
 	render(){
@@ -79,7 +86,7 @@ class PlayingList extends Component{
 			el = (
 				<div>
 					<h2>Currently playing:</h2>
-					<iframe onMouseenter={this.startBattle} src={src} width="300" height="380" frameBorder="0" allowTransparency="true"></iframe>
+					<iframe onMouseEnter={this.startBattle.bind(this)} src={src} width="300" height="380" frameBorder="0" allowTransparency="true"></iframe>
 				</div>
 			)
 		}else{

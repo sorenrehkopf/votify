@@ -1,11 +1,5 @@
-var SpotifyWebApi = require('spotify-web-api-node');
 var paths = ['/api/auth','api/spotify'];
-
-var spotifyApi = new SpotifyWebApi({
-	clientId:process.env.spotify_id,
-	clientSecret:process.env.spotify_secret,
-	redirectUri:process.env.spotify_redirect_uri
-});
+var spotifyApi = require('../services/spotifyService.js');
 
 var session = new Session();
 
@@ -17,7 +11,6 @@ function sessionAuth(req,res,next){
 	if(req && needsSession){
 		req.spotifyApi = spotifyApi;
 		req.session = session;
-		console.log(session.getUser());
 	}
 	next();
 	

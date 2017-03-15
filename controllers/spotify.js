@@ -21,12 +21,7 @@ router.post('/createPlaylist',function(req,res){
 	req.spotifyApi.createPlaylist(req.session.getUser().id,req.body.title,{public:false}).then(playlist=>{
 		console.log('created!',playlist);
 		votingService.setToList(playlist.body);
-		votingService.setSong({userId:req.session.getUser().id,song:req.body.song,api:req.spotifyApi}).then(song=>{
-			res.send(playlist.body);
-		}).catch(err=>{
-			console.log('error adding',err)
-			res.send(error);
-		});
+		votingService.setSong({userId:req.session.getUser().id,song:req.body.song,res:res});
 	}).catch(err=>{
 		console.log('error creating!',err);
 		res.send(err);

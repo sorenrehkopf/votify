@@ -27082,6 +27082,7 @@
 				song: ''
 			};
 			_this.search;
+			_this.playing;
 			return _this;
 		}
 
@@ -27115,19 +27116,21 @@
 				}
 				var searchTerm = encodeURIComponent(e.nativeEvent.target.value);
 				var thiz = this;
-				this.search = setTimeout(function () {
-					(0, _httpService2.default)({
-						method: 'GET',
-						url: 'https://api.spotify.com/v1/search?type=track&q=' + searchTerm
-					}, true).then(function (data) {
-						console.log(data.data.tracks);
-						thiz.setState({
-							songs: data.data.tracks.items
+				if (searchTerm) {
+					this.search = setTimeout(function () {
+						(0, _httpService2.default)({
+							method: 'GET',
+							url: 'https://api.spotify.com/v1/search?type=track&q=' + searchTerm
+						}, true).then(function (data) {
+							console.log(data.data.tracks);
+							thiz.setState({
+								songs: data.data.tracks.items
+							});
+						}).catch(function (err) {
+							console.log(err);
 						});
-					}).catch(function (err) {
-						console.log(err);
-					});
-				}, 600);
+					}, 600);
+				}
 			}
 		}, {
 			key: 'selectSong',
@@ -27139,16 +27142,20 @@
 			}
 		}, {
 			key: 'startBattle',
-			value: function startBattle() {
+			value: function startBattle(e) {
 				console.log('starting song battle!');
-				(0, _httpService2.default)({
-					method: 'GET',
-					url: '/api/session/startSong'
-				}).then(function (resp) {
-					console.log(resp);
-				}).catch(function (err) {
-					console.log(err);
-				});
+				var thiz = this;
+				if (!this.playing) {
+					(0, _httpService2.default)({
+						method: 'GET',
+						url: '/api/session/startSong'
+					}).then(function (resp) {
+						console.log(resp);
+						thiz.playing = true;
+					}).catch(function (err) {
+						console.log(err);
+					});
+				};
 			}
 		}, {
 			key: 'render',
@@ -27167,7 +27174,7 @@
 							null,
 							'Currently playing:'
 						),
-						_react2.default.createElement('iframe', { onMouseenter: this.startBattle, src: src, width: '300', height: '380', frameBorder: '0', allowTransparency: 'true' })
+						_react2.default.createElement('iframe', { onMouseEnter: this.startBattle.bind(this), src: src, width: '300', height: '380', frameBorder: '0', allowTransparency: 'true' })
 					);
 				} else {
 					var songs = this.state.songs.map(function (song, i) {
