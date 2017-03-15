@@ -40,7 +40,9 @@ router.get('/handleauth',function(req,res){
 });
 
 router.get('/check',function(req,res){
-	res.send(req.session.checkToken(req.headers.auth_token));
+	var loggedIn = req.session.checkToken(req.headers.auth_token);
+	var resp = loggedIn?{toList:req.session.getToList(),fromList:req.session.getFromList()}:false;
+	res.send(resp);
 });
 
 router.get('/logout',function(req,res){

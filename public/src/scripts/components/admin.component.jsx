@@ -10,10 +10,7 @@ class Admin extends Component {
 
 	constructor(){
 		super()
-		this.state = {
-			fromList:'',
-			toList:''
-		};
+		this.state = {};
 	}
 
 	componentWillMount(){
@@ -29,6 +26,12 @@ class Admin extends Component {
 		}).then(function(resp){
 			console.log(resp);
 			if(!resp.data) window.location.href = '/api/auth/login';
+			else{
+				thiz.setState({
+					fromList:resp.data.fromList,
+					playingList:resp.data.toList
+				})
+			}
 		}).catch(function(err){
 			console.log(err);
 		})

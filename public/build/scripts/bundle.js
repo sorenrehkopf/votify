@@ -26770,10 +26770,7 @@
 
 			var _this = _possibleConstructorReturn(this, (Admin.__proto__ || Object.getPrototypeOf(Admin)).call(this));
 
-			_this.state = {
-				fromList: '',
-				toList: ''
-			};
+			_this.state = {};
 			return _this;
 		}
 
@@ -26791,7 +26788,12 @@
 					url: '/api/auth/check'
 				}).then(function (resp) {
 					console.log(resp);
-					if (!resp.data) window.location.href = '/api/auth/login';
+					if (!resp.data) window.location.href = '/api/auth/login';else {
+						thiz.setState({
+							fromList: resp.data.fromList,
+							playingList: resp.data.toList
+						});
+					}
 				}).catch(function (err) {
 					console.log(err);
 				});

@@ -14,12 +14,10 @@ app.use(express.static('public'));
 var session = require('./middleware/session.js');
 app.use(session);
 
-var apiController = require(__dirname+'/controllers/api.js');
+var sessionController = require(__dirname+'/controllers/session.js');
 var authController = require(__dirname+'/controllers/auth.js');
 var spotifyController = require(__dirname+'/controllers/spotify.js');
-// var socketController = require(__dirname+'/controllers/socket.js');
-// app.use('/api/namespaces',socketController);
-app.use('/api',apiController);
+app.use('/api/session',sessionController);
 app.use('/api/auth',authController);
 app.use('/api/spotify',spotifyController);
 
