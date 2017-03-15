@@ -27271,7 +27271,11 @@
 						null,
 						'Vote!'
 					),
-					votingButtons
+					_react2.default.createElement(
+						'div',
+						{ className: 'button__group' },
+						votingButtons
+					)
 				);
 			}
 		}]);

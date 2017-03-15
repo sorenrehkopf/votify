@@ -16,7 +16,9 @@ class Vote extends Component {
 		return(
 			<div>
 				<h1>Vote!</h1>
-				{ votingButtons }
+				<div className="button__group">
+					{ votingButtons }
+				</div>
 			</div>
 		)
 	}
