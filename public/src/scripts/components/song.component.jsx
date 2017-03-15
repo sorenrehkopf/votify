@@ -4,7 +4,7 @@ class Song extends Component {
 
 	render(){
 		return(
-			<h1>{this.props.songName + this.props.songName}</h1>
+			<p>{this.props.songName}</p>
 			)
 	}
 

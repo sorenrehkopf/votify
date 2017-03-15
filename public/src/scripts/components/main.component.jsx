@@ -4,9 +4,9 @@ import { Link } from 'react-router';
 class Main extends Component {
 	render(){
 		return(
-			<div className="wrapper">
+			<main>
 				{this.props.children}
-			</div>
+			</main>
 		)
 	};
 };

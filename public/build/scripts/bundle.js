@@ -26595,8 +26595,8 @@
 			key: 'render',
 			value: function render() {
 				return _react2.default.createElement(
-					'div',
-					{ className: 'wrapper' },
+					'main',
+					null,
 					this.props.children
 				);
 			}
@@ -26710,9 +26710,9 @@
 			key: 'render',
 			value: function render() {
 				return _react2.default.createElement(
-					'h1',
+					'p',
 					null,
-					this.props.songName + this.props.songName
+					this.props.songName
 				);
 			}
 		}]);
@@ -27248,6 +27248,10 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _songComponent = __webpack_require__(235);
+
+	var _songComponent2 = _interopRequireDefault(_songComponent);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -27262,16 +27266,37 @@
 		function Vote() {
 			_classCallCheck(this, Vote);
 
-			return _possibleConstructorReturn(this, (Vote.__proto__ || Object.getPrototypeOf(Vote)).apply(this, arguments));
+			var _this = _possibleConstructorReturn(this, (Vote.__proto__ || Object.getPrototypeOf(Vote)).call(this));
+
+			_this.songs = ['Song A', 'Song B'];
+			return _this;
 		}
 
 		_createClass(Vote, [{
 			key: 'render',
 			value: function render() {
+				var votingButtons = this.songs.map(function (song, i) {
+					var buttonClass = song.replace(/\s/g, '');
+					return _react2.default.createElement(
+						'button',
+						{ className: [buttonClass, 'pure-button'].join(' '), key: i },
+						song
+					);
+				});
+
 				return _react2.default.createElement(
-					'h1',
+					'div',
 					null,
-					'Vote!'
+					_react2.default.createElement(
+						'h1',
+						null,
+						'Vote!'
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'button__group' },
+						votingButtons
+					)
 				);
 			}
 		}]);
