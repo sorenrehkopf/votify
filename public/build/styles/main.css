@@ -1,5 +1,21 @@
 body {
   background-color: green; }
   body .wrapper {
-    width: 500px;
     overflow: hidden; }
+
+.admin-controls {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex; }
+
+.new-pl-form {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start; }
+  .new-pl-form__song {
+    max-width: 200px; }
+    .new-pl-form__song--choice.selected {
+      background-color: white; }

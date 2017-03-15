@@ -17,6 +17,7 @@ function sessionAuth(req,res,next){
 	if(req && needsSession){
 		req.spotifyApi = spotifyApi;
 		req.session = session;
+		console.log(session.getUser());
 	}
 	next();
 	
@@ -24,16 +25,15 @@ function sessionAuth(req,res,next){
 
 function Session(){
 
-	this.sessionToken;
-	this.playlist;
-
 	return {
 		setToken:setToken.bind(this),
 		checkToken:checkToken.bind(this),
 		getToken:getToken.bind(this),
 		clearToken:clearToken.bind(this),
 		setPlaylist:setPlaylist.bind(this),
-		getPlaylist:getPlaylist.bind(this)
+		getPlaylist:getPlaylist.bind(this),
+		setUser:setUser.bind(this),
+		getUser:getUser.bind(this)
 	}
 
 	function setToken(){
@@ -63,7 +63,16 @@ function Session(){
 	}
 
 	function getPlaylist(){
-		return this.playList;
+		return this.sessionPlayList;
+	}
+
+	function setUser(user){
+		console.log(user);
+		this.user = user;
+	}
+
+	function getUser(){
+		return this.user;
 	}
 }
 

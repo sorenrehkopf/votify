@@ -4,7 +4,6 @@ var router = express.Router();
 router.get('/getPlaylists',function(req,res){
 	console.log('hey!');
 	req.spotifyApi.getUserPlaylists().then(function(data){
-		console.log('got playlists!', data.body);
 		res.send(data.body);
 	},
 	function(err){
@@ -14,5 +13,23 @@ router.get('/getPlaylists',function(req,res){
 		})
 	});
 })
+
+router.post('/createPlaylist',function(req,res){
+	console.log('creating!',req.body);
+	console.log('user1!1',req.session.getUser(),req.body.title);
+	req.spotifyApi.createPlaylist(req.session.getUser().id,req.body.title,{public:false}).then(playlist=>{
+		console.log('created!',playlist);
+		req.session.setPlaylist(playlist.body);
+		req.spotifyApi.addTracksToPlaylist(req.session.getUser().id,playlist.body.id,[req.body.song]).then(song=>{
+			res.send(playlist.body);
+		}).catch(err=>{
+			console.log('error adding',err)
+			res.send(error);
+		})
+	}).catch(err=>{
+		console.log('error creating!',err);
+		res.send(err);
+	});
+});
 
 module.exports = router;

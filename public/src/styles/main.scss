@@ -1,7 +1,2 @@
-body{
-	background-color:green;
-	.wrapper{
-		width:500px;
-		overflow:hidden;
-	}
-}
+@import 'partials/__globals',
+'partials/__admin';

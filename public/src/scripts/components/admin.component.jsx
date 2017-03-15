@@ -3,12 +3,16 @@ import React, { Component } from 'react';
 import SpotifyService from '../services/spotifyService.jsx';
 import Http from '../services/httpService.jsx';
 
+import FromList from './fromList.component.jsx';
+import PlayingList from './playingList.component.jsx';
+
 class Admin extends Component {
 
 	constructor(){
 		super()
 		this.state = {
-			playlists :[]
+			fromList:'',
+			toList:''
 		};
 	}
 
@@ -25,25 +29,9 @@ class Admin extends Component {
 		}).then(function(resp){
 			console.log(resp);
 			if(!resp.data) window.location.href = '/api/auth/login';
-			else{
-				SpotifyService.getPlaylists().then(function(resp){
-					console.log(resp.data);
-					thiz.setState({playlists:resp.data.items});
-					console.log(thiz.state);
-				});
-			}
 		}).catch(function(err){
 			console.log(err);
 		})
-	}
-
-	getPlaylists(){
-		var thiz = this;
-		SpotifyService.getPlaylists().then(function(resp){
-			console.log(resp.data);
-			thiz.setState({playlists:resp.data.items});
-			console.log(thiz.state);
-		});
 	}
 
 	logout(){
@@ -56,16 +44,29 @@ class Admin extends Component {
 		})
 	}
 
-	render(){
-		var playlists = this.state.playlists.map((pl,i)=>{
-			return <p key={i}>{pl.name}</p>
+	setFromList(e){
+		var playlist = JSON.parse(e.nativeEvent.target.getAttribute('data-playlist'));
+		this.setState({
+			fromList:playlist
 		});
+	}
+
+	setPlayingList(playlist){
+		this.setState({
+			playingList:playlist
+		});
+	}
+
+	render(){
 		return(
 			<div>
 				<h1>Welcome to the admin</h1>
 				<button onClick={this.logout}>Log me out!</button>
-				<button onClick={this.getPlaylists.bind(this)}>Get playlists!</button>
-				{playlists}
+				<div className="admin-controls">
+					<FromList playlist={this.state.fromList} choosePlaylist={this.setFromList.bind(this)}/>
+					<PlayingList playlist={this.state.playingList} setPlayingList={this.setPlayingList.bind(this)}/>
+				</div>
+				
 			</div>
 			)
 	}

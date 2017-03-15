@@ -23,6 +23,10 @@ router.get('/handleauth',function(req,res){
 		    req.spotifyApi.setAccessToken(data.body['access_token']);
 		    req.spotifyApi.setRefreshToken(data.body['refresh_token']);
 		    var token = req.session.setToken();
+		    req.spotifyApi.getMe().then(data=>{
+		    	console.log(data);
+		    	req.session.setUser(data.body);
+		    })
 		    res.redirect('http://localhost:3030/admin?auth_token='+token);
 		  }, function(err) {
 		    console.log('Something went wrong!', err);
