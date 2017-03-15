@@ -55,10 +55,21 @@ class PlayingList extends Component{
 	selectSong(e){
 		var idx = e.nativeEvent.target.getAttribute('data-idx');
 		this.setState({
-			song:this.state.songs[idx].uri
+			song:this.state.songs[idx]
 		});
 	}
 
+	startBattle(){
+		console.log('starting song battle!');
+		Http({
+			method:'GET',
+			url:'/api/session/startSong'
+		}).then(resp=>{
+			console.log(resp);
+		}).catch(err=>{
+			console.log(err);
+		})
+	}
 
 	render(){
 		var el = null;
@@ -68,12 +79,12 @@ class PlayingList extends Component{
 			el = (
 				<div>
 					<h2>Currently playing:</h2>
-					<iframe src={src} width="300" height="380" frameBorder="0" allowTransparency="true"></iframe>
+					<iframe onMouseenter={this.startBattle} src={src} width="300" height="380" frameBorder="0" allowTransparency="true"></iframe>
 				</div>
 			)
 		}else{
 			var songs = this.state.songs.map((song,i)=>{
-				var className = this.state.song === song.uri?'new-pl-form__song--choice selected':'new-pl-form__song--choice';
+				var className = this.state.song.uri === song.uri?'new-pl-form__song--choice selected':'new-pl-form__song--choice';
 				return <p className={className} key={i} onClick={this.selectSong.bind(this)} data-idx={i}>{song.name} - {song.artists[0].name}</p>
 			});
 			el = (

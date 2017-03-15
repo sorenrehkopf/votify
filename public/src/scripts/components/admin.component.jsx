@@ -19,22 +19,24 @@ class Admin extends Component {
 			var token = window.location.search.replace('?auth_token=','');
 			window.localStorage.setItem('auth_token',token);
 			window.location.href = window.location.origin+window.location.pathname;
+		}else{
+			Http({
+				method:'GET',
+				url:'/api/auth/check'
+			}).then(function(resp){
+				console.log(resp);
+				if(!resp.data) window.location.href = '/api/auth/login';
+				else{
+					thiz.setState({
+						fromList:resp.data.fromList,
+						playingList:resp.data.toList
+					})
+				}
+			}).catch(function(err){
+				console.log(err);
+			})
 		}
-		Http({
-			method:'GET',
-			url:'/api/auth/check'
-		}).then(function(resp){
-			console.log(resp);
-			if(!resp.data) window.location.href = '/api/auth/login';
-			else{
-				thiz.setState({
-					fromList:resp.data.fromList,
-					playingList:resp.data.toList
-				})
-			}
-		}).catch(function(err){
-			console.log(err);
-		})
+		
 	}
 
 	logout(){

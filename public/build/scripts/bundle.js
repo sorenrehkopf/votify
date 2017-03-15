@@ -26782,21 +26782,22 @@
 					var token = window.location.search.replace('?auth_token=', '');
 					window.localStorage.setItem('auth_token', token);
 					window.location.href = window.location.origin + window.location.pathname;
+				} else {
+					(0, _httpService2.default)({
+						method: 'GET',
+						url: '/api/auth/check'
+					}).then(function (resp) {
+						console.log(resp);
+						if (!resp.data) window.location.href = '/api/auth/login';else {
+							thiz.setState({
+								fromList: resp.data.fromList,
+								playingList: resp.data.toList
+							});
+						}
+					}).catch(function (err) {
+						console.log(err);
+					});
 				}
-				(0, _httpService2.default)({
-					method: 'GET',
-					url: '/api/auth/check'
-				}).then(function (resp) {
-					console.log(resp);
-					if (!resp.data) window.location.href = '/api/auth/login';else {
-						thiz.setState({
-							fromList: resp.data.fromList,
-							playingList: resp.data.toList
-						});
-					}
-				}).catch(function (err) {
-					console.log(err);
-				});
 			}
 		}, {
 			key: 'logout',
@@ -27133,7 +27134,20 @@
 			value: function selectSong(e) {
 				var idx = e.nativeEvent.target.getAttribute('data-idx');
 				this.setState({
-					song: this.state.songs[idx].uri
+					song: this.state.songs[idx]
+				});
+			}
+		}, {
+			key: 'startBattle',
+			value: function startBattle() {
+				console.log('starting song battle!');
+				(0, _httpService2.default)({
+					method: 'GET',
+					url: '/api/session/startSong'
+				}).then(function (resp) {
+					console.log(resp);
+				}).catch(function (err) {
+					console.log(err);
 				});
 			}
 		}, {
@@ -27153,11 +27167,11 @@
 							null,
 							'Currently playing:'
 						),
-						_react2.default.createElement('iframe', { src: src, width: '300', height: '380', frameBorder: '0', allowTransparency: 'true' })
+						_react2.default.createElement('iframe', { onMouseenter: this.startBattle, src: src, width: '300', height: '380', frameBorder: '0', allowTransparency: 'true' })
 					);
 				} else {
 					var songs = this.state.songs.map(function (song, i) {
-						var className = _this3.state.song === song.uri ? 'new-pl-form__song--choice selected' : 'new-pl-form__song--choice';
+						var className = _this3.state.song.uri === song.uri ? 'new-pl-form__song--choice selected' : 'new-pl-form__song--choice';
 						return _react2.default.createElement(
 							'p',
 							{ className: className, key: i, onClick: _this3.selectSong.bind(_this3), 'data-idx': i },

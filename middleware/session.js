@@ -77,11 +77,12 @@ function Session(){
 	}
 
 	function setUser(user){
-		console.log(user);
+		console.log('setting user!!',user);
 		this.user = user;
 	}
 
 	function getUser(){
+		console.log('getting user!',this.user);
 		return this.user;
 	}
 }

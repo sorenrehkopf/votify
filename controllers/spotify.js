@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var votingService = require('../services/votingService.js');
 
 router.get('/getPlaylists',function(req,res){
 	console.log('hey!');
@@ -19,13 +20,13 @@ router.post('/createPlaylist',function(req,res){
 	console.log('user1!1',req.session.getUser(),req.body.title);
 	req.spotifyApi.createPlaylist(req.session.getUser().id,req.body.title,{public:false}).then(playlist=>{
 		console.log('created!',playlist);
-		req.session.setToList(playlist.body);
-		req.spotifyApi.addTracksToPlaylist(req.session.getUser().id,playlist.body.id,[req.body.song]).then(song=>{
+		votingService.setToList(playlist.body);
+		votingService.setSong({userId:req.session.getUser().id,song:req.body.song,api:req.spotifyApi}).then(song=>{
 			res.send(playlist.body);
 		}).catch(err=>{
 			console.log('error adding',err)
 			res.send(error);
-		})
+		});
 	}).catch(err=>{
 		console.log('error creating!',err);
 		res.send(err);
@@ -34,7 +35,11 @@ router.post('/createPlaylist',function(req,res){
 
 router.post('/setFromList',function(req,res){
 	req.session.setFromList(req.body);
-	console.log('from!!',req.body,req.session.getFromList());
+	req.spotifyApi.getPlaylistTracks(req.session.getUser().id,req.body.id).then(data=>{
+		votingService.setFromList(data.body.items);
+	}).catch(err=>{
+		console.log('error!',err);
+	});
 	res.send({data:'success'});
 });
 

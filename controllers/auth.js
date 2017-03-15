@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var votingService = require('../services/votingService.js');
 
 var scopes = ['playlist-modify-private','playlist-modify-public','playlist-read-private'];
 var state = "";
@@ -24,7 +25,7 @@ router.get('/handleauth',function(req,res){
 		    req.spotifyApi.setRefreshToken(data.body['refresh_token']);
 		    var token = req.session.setToken();
 		    req.spotifyApi.getMe().then(data=>{
-		    	console.log(data);
+		    	console.log('got me!!',data);
 		    	req.session.setUser(data.body);
 		    })
 		    res.redirect('http://localhost:3030/admin?auth_token='+token);
@@ -41,7 +42,7 @@ router.get('/handleauth',function(req,res){
 
 router.get('/check',function(req,res){
 	var loggedIn = req.session.checkToken(req.headers.auth_token);
-	var resp = loggedIn?{toList:req.session.getToList(),fromList:req.session.getFromList()}:false;
+	var resp = loggedIn?{toList:req.session.getToList(),fromList:votingService.fromList}:false;
 	res.send(resp);
 });
 
