@@ -3,7 +3,7 @@
 
 body {
 	margin: 0;
-	background-color: pink;
+	background: linear-gradient(45deg, rgba(252,236,252,1) 0%,rgba(251,166,225,1) 50%,rgba(128,194,23,1) 51%,rgba(124,188,10,1) 100%);
 	font: 100%/1.2 'Open Sans', sans-serif;
 }
 
@@ -20,3 +20,6 @@ main {
 		font-family: $font__header;
 	}
 }
+
+@import 'partials/__globals',
+'partials/__admin';

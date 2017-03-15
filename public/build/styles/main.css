@@ -1,6 +1,7 @@
 body {
   margin: 0;
-  background-color: pink;
+  background: -webkit-linear-gradient(45deg, #fcecfc 0%, #fba6e1 50%, #80c217 51%, #7cbc0a 100%);
+  background: linear-gradient(45deg, #fcecfc 0%, #fba6e1 50%, #80c217 51%, #7cbc0a 100%);
   font: 100%/1.2 'Open Sans', sans-serif; }
 
 #app {
@@ -12,3 +13,25 @@ main {
     font-size: 3em;
     text-align: center;
     font-family: "Audiowide", cursive; }
+
+body {
+  background-color: green; }
+  body .wrapper {
+    overflow: hidden; }
+
+.admin-controls {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex; }
+
+.new-pl-form {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start; }
+  .new-pl-form__song {
+    max-width: 200px; }
+    .new-pl-form__song--choice.selected {
+      background-color: white; }

@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import Song from './song.component.jsx';
 
 class Vote extends Component {
-
 	constructor(){
 		super();
 		this.songs = ['Song A','Song B'];

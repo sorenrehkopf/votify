@@ -1,0 +1,18 @@
+.admin-controls{
+	display:flex;
+
+}
+
+.new-pl-form{
+	display:flex;
+	align-items:flex-start;
+	&__song{
+		max-width:200px;
+		&--choice{
+			&.selected{
+				background-color:white;
+			}
+		}
+		
+	}
+}

@@ -66,7 +66,7 @@
 
 	var _adminComponent2 = _interopRequireDefault(_adminComponent);
 
-	var _voteComponent = __webpack_require__(237);
+	var _voteComponent = __webpack_require__(241);
 
 	var _voteComponent2 = _interopRequireDefault(_voteComponent);
 
@@ -26738,6 +26738,22 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _spotifyService = __webpack_require__(237);
+
+	var _spotifyService2 = _interopRequireDefault(_spotifyService);
+
+	var _httpService = __webpack_require__(238);
+
+	var _httpService2 = _interopRequireDefault(_httpService);
+
+	var _fromListComponent = __webpack_require__(239);
+
+	var _fromListComponent2 = _interopRequireDefault(_fromListComponent);
+
+	var _playingListComponent = __webpack_require__(240);
+
+	var _playingListComponent2 = _interopRequireDefault(_playingListComponent);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -26752,13 +26768,71 @@
 		function Admin() {
 			_classCallCheck(this, Admin);
 
-			return _possibleConstructorReturn(this, (Admin.__proto__ || Object.getPrototypeOf(Admin)).call(this));
+			var _this = _possibleConstructorReturn(this, (Admin.__proto__ || Object.getPrototypeOf(Admin)).call(this));
+
+			_this.state = {};
+			return _this;
 		}
 
 		_createClass(Admin, [{
 			key: 'componentWillMount',
 			value: function componentWillMount() {
-				console.log('mounting!!');
+				var thiz = this;
+				if (window.location.search) {
+					var token = window.location.search.replace('?auth_token=', '');
+					window.localStorage.setItem('auth_token', token);
+					window.location.href = window.location.origin + window.location.pathname;
+				}
+				(0, _httpService2.default)({
+					method: 'GET',
+					url: '/api/auth/check'
+				}).then(function (resp) {
+					console.log(resp);
+					if (!resp.data) window.location.href = '/api/auth/login';else {
+						thiz.setState({
+							fromList: resp.data.fromList,
+							playingList: resp.data.toList
+						});
+					}
+				}).catch(function (err) {
+					console.log(err);
+				});
+			}
+		}, {
+			key: 'logout',
+			value: function logout() {
+				(0, _httpService2.default)({
+					method: 'GET',
+					url: '/api/auth/logout'
+				}).then(function (data) {
+					window.localStorage.removeItem('auth_token');
+					window.location.href = '/';
+				});
+			}
+		}, {
+			key: 'setFromList',
+			value: function setFromList(e) {
+				var playlist = JSON.parse(e.nativeEvent.target.getAttribute('data-playlist'));
+				var thiz = this;
+				(0, _httpService2.default)({
+					method: 'POST',
+					url: '/api/spotify/setFromList',
+					data: playlist
+				}).then(function (data) {
+					console.log('success!');
+					thiz.setState({
+						fromList: playlist
+					});
+				}).catch(function (err) {
+					alert('there was an error!', err);
+				});
+			}
+		}, {
+			key: 'setPlayingList',
+			value: function setPlayingList(playlist) {
+				this.setState({
+					playingList: playlist
+				});
 			}
 		}, {
 			key: 'render',
@@ -26771,7 +26845,17 @@
 						null,
 						'Welcome to the admin'
 					),
-					_react2.default.createElement('iframe', { src: 'https://embed.spotify.com/?uri=spotify:user:122841543:playlist:1cbrPTCufxieRgxz3jLb92', width: '500', height: '380', frameBorder: '0', allowTransparency: 'true' })
+					_react2.default.createElement(
+						'button',
+						{ onClick: this.logout },
+						'Log me out!'
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'admin-controls' },
+						_react2.default.createElement(_fromListComponent2.default, { playlist: this.state.fromList, choosePlaylist: this.setFromList.bind(this) }),
+						_react2.default.createElement(_playingListComponent2.default, { playlist: this.state.playingList, setPlayingList: this.setPlayingList.bind(this) })
+					)
 				);
 			}
 		}]);
@@ -26783,6 +26867,352 @@
 
 /***/ },
 /* 237 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _httpService = __webpack_require__(238);
+
+	var _httpService2 = _interopRequireDefault(_httpService);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var SpotifyService = function () {
+		function SpotifyService() {
+			_classCallCheck(this, SpotifyService);
+		}
+
+		_createClass(SpotifyService, null, [{
+			key: 'getPlaylists',
+			value: function getPlaylists() {
+				return (0, _httpService2.default)({
+					method: 'GET',
+					url: '/api/spotify/getPlaylists'
+				});
+			}
+		}]);
+
+		return SpotifyService;
+	}();
+
+	exports.default = SpotifyService;
+
+/***/ },
+/* 238 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	function Http(config, noAuth) {
+		var authHeader = window.localStorage.getItem('auth_token');
+		var data = null;
+		return new Promise(function (resolve, reject) {
+			var http = new XMLHttpRequest();
+			http.open(config.method, config.url);
+			if (!noAuth) http.setRequestHeader('auth_token', authHeader);
+			if (config.data) {
+				http.setRequestHeader('Content-Type', 'application/json');
+				data = JSON.stringify(config.data);
+				console.log(data);
+			}
+			http.send(data);
+			http.onreadystatechange = function () {
+				if (http.readyState === 4) {
+					if (http.status === 200) resolve({ data: JSON.parse(http.response) });else reject('error ' + http.status);
+				}
+			};
+		});
+	}
+
+	exports.default = Http;
+
+/***/ },
+/* 239 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _spotifyService = __webpack_require__(237);
+
+	var _spotifyService2 = _interopRequireDefault(_spotifyService);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var FromList = function (_Component) {
+		_inherits(FromList, _Component);
+
+		function FromList(props) {
+			_classCallCheck(this, FromList);
+
+			var _this = _possibleConstructorReturn(this, (FromList.__proto__ || Object.getPrototypeOf(FromList)).call(this, props));
+
+			_this.state = {
+				playlists: []
+			};
+			return _this;
+		}
+
+		_createClass(FromList, [{
+			key: 'componentWillMount',
+			value: function componentWillMount() {
+				var thiz = this;
+				_spotifyService2.default.getPlaylists().then(function (resp) {
+					thiz.setState({ playlists: resp.data.items });
+					console.log(thiz.state);
+				});
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				var _this2 = this;
+
+				var playlists = this.state.playlists.map(function (pl, i) {
+					var plInfo = JSON.stringify(pl);
+					return _react2.default.createElement(
+						'h3',
+						{ key: i, onClick: _this2.props.choosePlaylist, 'data-playlist': plInfo },
+						pl.name
+					);
+				});
+
+				var el = null;
+				if (!this.props.playlist) {
+					el = _react2.default.createElement(
+						'div',
+						null,
+						_react2.default.createElement(
+							'h2',
+							null,
+							'Choose a list to pull songs from!'
+						),
+						playlists
+					);
+				} else {
+					el = _react2.default.createElement(
+						'div',
+						null,
+						_react2.default.createElement(
+							'h2',
+							null,
+							'Currently pulling songs from: '
+						),
+						_react2.default.createElement(
+							'h3',
+							null,
+							this.props.playlist.name
+						)
+					);
+				}
+
+				return el;
+			}
+		}]);
+
+		return FromList;
+	}(_react.Component);
+
+	exports.default = FromList;
+
+/***/ },
+/* 240 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _httpService = __webpack_require__(238);
+
+	var _httpService2 = _interopRequireDefault(_httpService);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var PlayingList = function (_Component) {
+		_inherits(PlayingList, _Component);
+
+		function PlayingList() {
+			_classCallCheck(this, PlayingList);
+
+			var _this = _possibleConstructorReturn(this, (PlayingList.__proto__ || Object.getPrototypeOf(PlayingList)).call(this));
+
+			_this.state = {
+				songs: [],
+				song: ''
+			};
+			_this.search;
+			return _this;
+		}
+
+		_createClass(PlayingList, [{
+			key: 'createPlaylist',
+			value: function createPlaylist(e) {
+				var _this2 = this;
+
+				e.preventDefault();
+				var thiz = this;
+				var title = e.target.querySelector('[name="playlist-name"]').value;
+				(0, _httpService2.default)({
+					method: 'POST',
+					url: '/api/spotify/createPlaylist',
+					data: {
+						title: title,
+						song: thiz.state.song
+					}
+				}).then(function (data) {
+					console.log('data', data);
+					_this2.props.setPlayingList(data.data);
+				}).catch(function (err) {
+					console.log('error!', err);
+				});
+			}
+		}, {
+			key: 'searchSongs',
+			value: function searchSongs(e) {
+				if (this.search) {
+					clearTimeout(this.search);
+				}
+				var searchTerm = encodeURIComponent(e.nativeEvent.target.value);
+				var thiz = this;
+				this.search = setTimeout(function () {
+					(0, _httpService2.default)({
+						method: 'GET',
+						url: 'https://api.spotify.com/v1/search?type=track&q=' + searchTerm
+					}, true).then(function (data) {
+						console.log(data.data.tracks);
+						thiz.setState({
+							songs: data.data.tracks.items
+						});
+					}).catch(function (err) {
+						console.log(err);
+					});
+				}, 600);
+			}
+		}, {
+			key: 'selectSong',
+			value: function selectSong(e) {
+				var idx = e.nativeEvent.target.getAttribute('data-idx');
+				this.setState({
+					song: this.state.songs[idx].uri
+				});
+			}
+		}, {
+			key: 'render',
+			value: function render() {
+				var _this3 = this;
+
+				var el = null;
+				if (this.props.playlist) {
+					var src = 'https://embed.spotify.com/?uri=' + this.props.playlist.uri;
+					console.log(src);
+					el = _react2.default.createElement(
+						'div',
+						null,
+						_react2.default.createElement(
+							'h2',
+							null,
+							'Currently playing:'
+						),
+						_react2.default.createElement('iframe', { src: src, width: '300', height: '380', frameBorder: '0', allowTransparency: 'true' })
+					);
+				} else {
+					var songs = this.state.songs.map(function (song, i) {
+						var className = _this3.state.song === song.uri ? 'new-pl-form__song--choice selected' : 'new-pl-form__song--choice';
+						return _react2.default.createElement(
+							'p',
+							{ className: className, key: i, onClick: _this3.selectSong.bind(_this3), 'data-idx': i },
+							song.name,
+							' - ',
+							song.artists[0].name
+						);
+					});
+					el = _react2.default.createElement(
+						'div',
+						null,
+						_react2.default.createElement(
+							'h2',
+							null,
+							'Enter a name and choose a song to get the playlist started!'
+						),
+						_react2.default.createElement(
+							'form',
+							{ className: 'new-pl-form', onSubmit: this.createPlaylist.bind(this) },
+							_react2.default.createElement(
+								'label',
+								null,
+								'Name: '
+							),
+							_react2.default.createElement('input', { type: 'text', name: 'playlist-name', required: true }),
+							_react2.default.createElement(
+								'label',
+								null,
+								'Search for a song to start the list: '
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'new-pl-form__song' },
+								_react2.default.createElement('input', { type: 'text', name: 'start-song', onInput: this.searchSongs.bind(this), required: true }),
+								songs
+							),
+							_react2.default.createElement(
+								'button',
+								null,
+								'Create!'
+							)
+						)
+					);
+				}
+				return el;
+			}
+		}]);
+
+		return PlayingList;
+	}(_react.Component);
+
+	exports.default = PlayingList;
+
+/***/ },
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
