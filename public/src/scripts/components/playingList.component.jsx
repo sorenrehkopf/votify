@@ -5,8 +5,8 @@ import Http from '../services/httpService.jsx';
 
 class PlayingList extends Component{
 
-	constructor(){
-		super();
+	constructor(props){
+		super(props);
 		this.state = {
 			songs:[],
 			song:''
@@ -65,13 +65,13 @@ class PlayingList extends Component{
 	startBattle(e){
 		console.log('starting song battle!');
 		var thiz = this;
-		if(!this.playing){
+		if(!this.props.playing){
 			Http({
 				method:'GET',
 				url:'/api/session/startSong'
 			}).then(resp=>{
 				console.log(resp);
-				thiz.playing = true;
+				thiz.props.playing = true;
 			}).catch(err=>{
 				console.log(err);
 			})

@@ -10,20 +10,25 @@ votingService.setIo(nio);
 
 nio.on('connection',function(socket){
 	console.log('connected!!!!!!!!!!!!!!');
-	socket.on('on',function(e){
-		console.log('on');
-		nio.emit('on');
-	})
-	socket.on('off',function(e){
-		console.log('off');
-		nio.emit('off');
-	})
 });
 
 router.get('/startSong',function(req,res){
 	console.log('hey');
-	votingService.startSong()
+	votingService.startSong(nio);
 	res.status(200).send({data:'success!'});
+});
+
+router.get('/stop',function(req,res){
+	console.log('stopping!');
+	votingService.stop();
+	res.status(200).send({data:'success!'});
+})
+
+router.post('/vote',function(req,res){
+	console.log(req.body);
+	votingService.vote(req.body.which);
+	nio.emit('vote',{which:req.body.which});
+	res.send('success!');
 });
 
 module.exports = router;
