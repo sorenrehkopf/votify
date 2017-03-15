@@ -9,7 +9,8 @@ class Vote extends Component {
 
 	render(){
 		var votingButtons = this.songs.map((song,i)=>{
-			return <button className={song} key={i}>{song}</button>
+			var buttonClass = song.replace(/\s/g, '');
+			return <button className={[buttonClass, 'pure-button'].join(' ')} key={i}>{song}</button>
 		});
 
 		return(

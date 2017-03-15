@@ -1,8 +1,10 @@
 body {
   margin: 0;
+  font: 100%/1.2 'Open Sans', sans-serif;
   background: -webkit-linear-gradient(45deg, #fcecfc 0%, #fba6e1 50%, #80c217 51%, #7cbc0a 100%);
-  background: linear-gradient(45deg, #fcecfc 0%, #fba6e1 50%, #80c217 51%, #7cbc0a 100%);
-  font: 100%/1.2 'Open Sans', sans-serif; }
+  background: linear-gradient(45deg, #fcecfc 0%, #fba6e1 50%, #80c217 51%, #7cbc0a 100%); }
+  body .wrapper {
+    overflow: hidden; }
 
 #app {
   margin: 0 auto; }
@@ -13,11 +15,6 @@ main {
     font-size: 3em;
     text-align: center;
     font-family: "Audiowide", cursive; }
-
-body {
-  background-color: green; }
-  body .wrapper {
-    overflow: hidden; }
 
 .admin-controls {
   display: -webkit-box;

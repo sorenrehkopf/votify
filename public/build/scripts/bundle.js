@@ -27255,9 +27255,10 @@
 			key: 'render',
 			value: function render() {
 				var votingButtons = this.songs.map(function (song, i) {
+					var buttonClass = song.replace(/\s/g, '');
 					return _react2.default.createElement(
 						'button',
-						{ className: song, key: i },
+						{ className: [buttonClass, 'pure-button'].join(' '), key: i },
 						song
 					);
 				});
