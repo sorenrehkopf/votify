@@ -26811,8 +26811,18 @@
 			key: 'setFromList',
 			value: function setFromList(e) {
 				var playlist = JSON.parse(e.nativeEvent.target.getAttribute('data-playlist'));
-				this.setState({
-					fromList: playlist
+				var thiz = this;
+				(0, _httpService2.default)({
+					method: 'POST',
+					url: '/api/spotify/setFromList',
+					data: playlist
+				}).then(function (data) {
+					console.log('success!');
+					thiz.setState({
+						fromList: playlist
+					});
+				}).catch(function (err) {
+					alert('there was an error!', err);
 				});
 			}
 		}, {
@@ -26982,11 +26992,7 @@
 				var _this2 = this;
 
 				var playlists = this.state.playlists.map(function (pl, i) {
-					var plInfo = JSON.stringify({
-						id: pl.id,
-						uri: pl.uri,
-						name: pl.name
-					});
+					var plInfo = JSON.stringify(pl);
 					return _react2.default.createElement(
 						'h3',
 						{ key: i, onClick: _this2.props.choosePlaylist, 'data-playlist': plInfo },

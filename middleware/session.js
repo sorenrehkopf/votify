@@ -30,8 +30,10 @@ function Session(){
 		checkToken:checkToken.bind(this),
 		getToken:getToken.bind(this),
 		clearToken:clearToken.bind(this),
-		setPlaylist:setPlaylist.bind(this),
-		getPlaylist:getPlaylist.bind(this),
+		setToList:setToList.bind(this),
+		getToList:getToList.bind(this),
+		setFromList:setFromList.bind(this),
+		getFromList:getFromList.bind(this),
 		setUser:setUser.bind(this),
 		getUser:getUser.bind(this)
 	}
@@ -58,12 +60,20 @@ function Session(){
 		return this.sessionToken;
 	}
 
-	function setPlaylist(playlist){
-		this.sessionPlaylist = playlist;
+	function setToList(playlist){
+		this.toList = playlist;
 	}
 
-	function getPlaylist(){
-		return this.sessionPlayList;
+	function getToList(){
+		return this.toList;
+	}
+
+	function setFromList(playlist){
+		this.fromList = playlist;
+	}
+
+	function getFromList(){
+		return this.fromList;
 	}
 
 	function setUser(user){

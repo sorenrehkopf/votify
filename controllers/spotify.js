@@ -19,7 +19,7 @@ router.post('/createPlaylist',function(req,res){
 	console.log('user1!1',req.session.getUser(),req.body.title);
 	req.spotifyApi.createPlaylist(req.session.getUser().id,req.body.title,{public:false}).then(playlist=>{
 		console.log('created!',playlist);
-		req.session.setPlaylist(playlist.body);
+		req.session.setToList(playlist.body);
 		req.spotifyApi.addTracksToPlaylist(req.session.getUser().id,playlist.body.id,[req.body.song]).then(song=>{
 			res.send(playlist.body);
 		}).catch(err=>{
@@ -30,6 +30,12 @@ router.post('/createPlaylist',function(req,res){
 		console.log('error creating!',err);
 		res.send(err);
 	});
+});
+
+router.post('/setFromList',function(req,res){
+	req.session.setFromList(req.body);
+	console.log('from!!',req.body,req.session.getFromList());
+	res.send({data:'success'});
 });
 
 module.exports = router;

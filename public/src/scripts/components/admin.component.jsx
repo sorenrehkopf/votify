@@ -46,8 +46,18 @@ class Admin extends Component {
 
 	setFromList(e){
 		var playlist = JSON.parse(e.nativeEvent.target.getAttribute('data-playlist'));
-		this.setState({
-			fromList:playlist
+		var thiz = this;
+		Http({
+			method:'POST',
+			url:'/api/spotify/setFromList',
+			data:playlist
+		}).then(data=>{
+			console.log('success!');
+			thiz.setState({
+				fromList:playlist
+			});
+		}).catch(err=>{
+			alert('there was an error!',err);
 		});
 	}
 

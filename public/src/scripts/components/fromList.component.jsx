@@ -22,11 +22,7 @@ class FromList extends Component{
 
 	render(){
 		var playlists = this.state.playlists.map((pl,i)=>{
-			let plInfo = JSON.stringify({
-				id:pl.id,
-				uri:pl.uri,
-				name:pl.name
-			})
+			let plInfo = JSON.stringify(pl);
 			return <h3 key={i} onClick={this.props.choosePlaylist} data-playlist={plInfo}>{pl.name}</h3>
 		});
 
