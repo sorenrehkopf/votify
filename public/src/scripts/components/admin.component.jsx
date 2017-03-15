@@ -10,7 +10,9 @@ class Admin extends Component {
 
 	constructor(){
 		super()
-		this.state = {};
+		this.state = {
+			playing:false
+		};
 	}
 
 	componentWillMount(){
@@ -72,14 +74,31 @@ class Admin extends Component {
 		});
 	}
 
+	stopVoting(){
+		console.log('stopping');
+		var thiz = this;
+		Http({
+			method:'GET',
+			url:'/api/session/stop'
+		}).then(resp=>{
+			console.log(resp);
+			thiz.setState({
+				playing:false
+			});
+		}).catch(err=>{
+			console.log(err);
+		});
+	}
+
 	render(){
 		return(
 			<div>
 				<h1>Welcome to the admin</h1>
 				<button onClick={this.logout}>Log me out!</button>
+				<button onClick={this.stopVoting}>Stop voting!</button>
 				<div className="admin-controls">
 					<FromList playlist={this.state.fromList} choosePlaylist={this.setFromList.bind(this)}/>
-					<PlayingList playlist={this.state.playingList} setPlayingList={this.setPlayingList.bind(this)}/>
+					<PlayingList playlist={this.state.playingList} playing={this.state.playing} setPlayingList={this.setPlayingList.bind(this)}/>
 				</div>
 				
 			</div>

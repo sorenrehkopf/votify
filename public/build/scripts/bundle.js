@@ -26770,7 +26770,9 @@
 
 			var _this = _possibleConstructorReturn(this, (Admin.__proto__ || Object.getPrototypeOf(Admin)).call(this));
 
-			_this.state = {};
+			_this.state = {
+				playing: false
+			};
 			return _this;
 		}
 
@@ -26836,6 +26838,23 @@
 				});
 			}
 		}, {
+			key: 'stopVoting',
+			value: function stopVoting() {
+				console.log('stopping');
+				var thiz = this;
+				(0, _httpService2.default)({
+					method: 'GET',
+					url: '/api/session/stop'
+				}).then(function (resp) {
+					console.log(resp);
+					thiz.setState({
+						playing: false
+					});
+				}).catch(function (err) {
+					console.log(err);
+				});
+			}
+		}, {
 			key: 'render',
 			value: function render() {
 				return _react2.default.createElement(
@@ -26852,10 +26871,15 @@
 						'Log me out!'
 					),
 					_react2.default.createElement(
+						'button',
+						{ onClick: this.stopVoting },
+						'Stop voting!'
+					),
+					_react2.default.createElement(
 						'div',
 						{ className: 'admin-controls' },
 						_react2.default.createElement(_fromListComponent2.default, { playlist: this.state.fromList, choosePlaylist: this.setFromList.bind(this) }),
-						_react2.default.createElement(_playingListComponent2.default, { playlist: this.state.playingList, setPlayingList: this.setPlayingList.bind(this) })
+						_react2.default.createElement(_playingListComponent2.default, { playlist: this.state.playingList, playing: this.state.playing, setPlayingList: this.setPlayingList.bind(this) })
 					)
 				);
 			}
@@ -27072,10 +27096,10 @@
 	var PlayingList = function (_Component) {
 		_inherits(PlayingList, _Component);
 
-		function PlayingList() {
+		function PlayingList(props) {
 			_classCallCheck(this, PlayingList);
 
-			var _this = _possibleConstructorReturn(this, (PlayingList.__proto__ || Object.getPrototypeOf(PlayingList)).call(this));
+			var _this = _possibleConstructorReturn(this, (PlayingList.__proto__ || Object.getPrototypeOf(PlayingList)).call(this, props));
 
 			_this.state = {
 				songs: [],
@@ -27145,13 +27169,13 @@
 			value: function startBattle(e) {
 				console.log('starting song battle!');
 				var thiz = this;
-				if (!this.playing) {
+				if (!this.props.playing) {
 					(0, _httpService2.default)({
 						method: 'GET',
 						url: '/api/session/startSong'
 					}).then(function (resp) {
 						console.log(resp);
-						thiz.playing = true;
+						thiz.props.playing = true;
 					}).catch(function (err) {
 						console.log(err);
 					});

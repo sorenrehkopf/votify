@@ -23,13 +23,13 @@ function VotingService(){
 			});
 		}else{
 			var song = this.fromList.splice(findLargest(this.votes),1)[0].track;
-			console.log('pushing!',this.userId, song.name);
+			console.log('pushing!');
 			spotifyApi.addTracksToPlaylist(thiz.userId,thiz.toList.id,[song.uri]).then(song=>{
 				console.log(song);
 			}).catch(err=>{
 				console.log('error adding',err);
 			});
-			setTimeout(thiz.startSong.bind(this),30000);
+			if(!this.stopped) this.startSongTimer = setTimeout(thiz.startSong.bind(this),30000);
 		}
 		this.playingSong = song;
 	}
@@ -48,6 +48,13 @@ function VotingService(){
 			this.votes.push({idx:j,votes:0});
 			used.push(j);
 			this.choices.push(this.fromList[j]);
+			console.log(this.choices);
+			console.log(this.votes);
+			var feChoices = this.choices.map(c=>{
+				c.score = 0;
+				return c;
+			});
+			this.nio.emit('choices',{choices:feChoices})
 		}
 	}
 
@@ -60,12 +67,19 @@ function VotingService(){
 		this.io = io;
 	}
 
-	this.startSong = function(){
-		var wait = this.playingSong.duration_ms - 20000;
+	this.startSong = function(nio){
+		if(nio) this.nio = nio;
+		var wait = this.playingSong.duration_ms - (this.playingSong.duration_ms - 20000);
 		console.log(wait);
 		this.setChoices();
 		var thiz = this;
-		setTimeout(this.setSong.bind(this),wait);
+		this.nio.emit('new-song',{choices:thiz.choices});
+		this.upNextTimer = setTimeout(this.setSong.bind(this),wait);
+	}
+
+	this.stop = function(){
+		clearTimeout(this.upNextTimer);
+		clearTimeout(this.startSongTimer);
 	}
 
 	this.setToList = function(playlist){
