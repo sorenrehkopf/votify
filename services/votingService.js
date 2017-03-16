@@ -22,6 +22,7 @@ function VotingService(){
 				config.res.send(err);
 			});
 		}else{
+			console.log(findLargest(this.votes));
 			var song = this.fromList.splice(findLargest(this.votes),1)[0].track;
 			console.log('pushing!');
 			spotifyApi.addTracksToPlaylist(thiz.userId,thiz.toList.id,[song.uri]).then(song=>{
@@ -31,6 +32,7 @@ function VotingService(){
 			});
 			if(!this.stopped) this.startSongTimer = setTimeout(thiz.startSong.bind(this),30000);
 		}
+		if(this.nio) this.nio.emit('song-set',{});
 		this.playingSong = song;
 	}
 
@@ -48,8 +50,6 @@ function VotingService(){
 			this.votes.push({idx:j,votes:0});
 			used.push(j);
 			this.choices.push(this.fromList[j]);
-			console.log(this.choices);
-			console.log(this.votes);
 		}
 		var feChoices = this.choices.map(c=>{
 			c.score = 0;
@@ -69,7 +69,7 @@ function VotingService(){
 
 	this.startSong = function(nio){
 		if(nio) this.nio = nio;
-		var wait = this.playingSong.duration_ms - (this.playingSong.duration_ms - 50000);
+		var wait = this.playingSong.duration_ms - 30000;
 		console.log(wait);
 		this.setChoices();
 		var thiz = this;
@@ -80,6 +80,7 @@ function VotingService(){
 	this.stop = function(){
 		clearTimeout(this.upNextTimer);
 		clearTimeout(this.startSongTimer);
+		this.toList = null;
 	}
 
 	this.setToList = function(playlist){
@@ -89,13 +90,12 @@ function VotingService(){
 }
 
 function findLargest(arr){
-	var most = 0;
+	var most = arr[0].idx;
 	arr.forEach(s=>{
 		if(s.votes>most){
 			most = s.idx;
 		}
 	});
-	console.log('most!!!1',most);
 	return most;
 }
 

@@ -26656,7 +26656,7 @@
 		_createClass(DataVisuals, [{
 			key: 'componentWillMount',
 			value: function componentWillMount() {
-				_socketService2.default.on('vote', function (data) {
+				_socketService2.default.on('new-vote', function (data) {
 					console.log('data: ', data);
 				});
 				_socketService2.default.on('choices', function (data) {
@@ -26752,7 +26752,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var socket = (0, _socket2.default)('localhost:3000/socketspace');
+	var socket = (0, _socket2.default)('http://10.144.81.72:3000/socketspace');
 	exports.default = socket;
 
 /***/ },
@@ -35302,6 +35302,10 @@
 
 	var _httpService2 = _interopRequireDefault(_httpService);
 
+	var _socketService = __webpack_require__(236);
+
+	var _socketService2 = _interopRequireDefault(_socketService);
+
 	var _fromListComponent = __webpack_require__(292);
 
 	var _fromListComponent2 = _interopRequireDefault(_fromListComponent);
@@ -35317,6 +35321,9 @@
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var plRefreshLink1;
+	var plRefreshLink2;
 
 	var Admin = function (_Component) {
 		_inherits(Admin, _Component);
@@ -35356,6 +35363,34 @@
 						console.log(err);
 					});
 				}
+			}
+		}, {
+			key: 'componentDidMount',
+			value: function componentDidMount() {
+				plRefreshLink1 = document.getElementById('playlistRefreshLink1');
+				plRefreshLink2 = document.getElementById('playlistRefreshLink2');
+				var thiz = this;
+				_socketService2.default.on('song-set', function (e) {
+					console.log('song socket!');
+					var list = thiz.state.playingList;
+					setTimeout(function () {
+						thiz.setState({
+							playingList: { uri: '' }
+						});
+					}, 8000);
+					setTimeout(function () {
+						thiz.setState({
+							playingList: list
+						});
+						plRefreshLink2.click();
+					}, 10000);
+				});
+				_socketService2.default.on('new-song', function (e) {
+					console.log('new-song!');
+					setTimeout(function () {
+						plRefreshLink1.click();
+					}, 50000);
+				});
 			}
 		}, {
 			key: 'logout',
@@ -35411,6 +35446,14 @@
 				});
 			}
 		}, {
+			key: 'togglePlaying',
+			value: function togglePlaying(val) {
+				console.log(val);
+				this.setState({
+					playing: val
+				});
+			}
+		}, {
 			key: 'render',
 			value: function render() {
 				return _react2.default.createElement(
@@ -35428,23 +35471,20 @@
 					),
 					_react2.default.createElement(
 						'button',
-						{ onClick: this.stopVoting },
+						{ onClick: this.stopVoting.bind(this) },
 						'Stop voting!'
 					),
 					_react2.default.createElement(
 						'a',
-						{ href: this.state.playingList ? this.state.playingList.uri : '' },
-						_react2.default.createElement(
-							'button',
-							null,
-							'go to spotify pls'
-						)
+						{ id: 'playlistRefreshLink2', href: this.state.playingList ? this.state.playingList.uri : '' },
+						'the playlist link'
 					),
+					_react2.default.createElement('a', { id: 'playlistRefreshLink1', href: 'spotify:album:2tzbNCAUTmW4MIM2Ulvrwl' }),
 					_react2.default.createElement(
 						'div',
 						{ className: 'admin-controls' },
 						_react2.default.createElement(_fromListComponent2.default, { playlist: this.state.fromList, choosePlaylist: this.setFromList.bind(this) }),
-						_react2.default.createElement(_playingListComponent2.default, { playlist: this.state.playingList, playing: this.state.playing, setPlayingList: this.setPlayingList.bind(this) })
+						_react2.default.createElement(_playingListComponent2.default, { playlist: this.state.playingList, playing: this.state.playing, togglePlaying: this.togglePlaying.bind(this), setPlayingList: this.setPlayingList.bind(this) })
 					)
 				);
 			}
@@ -35732,15 +35772,15 @@
 		}, {
 			key: 'startBattle',
 			value: function startBattle(e) {
-				console.log('starting song battle!');
 				var thiz = this;
 				if (!this.props.playing) {
+					console.log('starting song battle!');
 					(0, _httpService2.default)({
 						method: 'GET',
 						url: '/api/session/startSong'
 					}).then(function (resp) {
 						console.log(resp);
-						thiz.props.playing = true;
+						thiz.props.togglePlaying(true);
 					}).catch(function (err) {
 						console.log(err);
 					});
@@ -35841,6 +35881,10 @@
 
 	var _songComponent2 = _interopRequireDefault(_songComponent);
 
+	var _httpService = __webpack_require__(291);
+
+	var _httpService2 = _interopRequireDefault(_httpService);
+
 	var _socketService = __webpack_require__(236);
 
 	var _socketService2 = _interopRequireDefault(_socketService);
@@ -35872,6 +35916,17 @@
 			value: function componentWillMount() {
 				var thiz = this;
 				_socketService2.default.on('choices', thiz.choicesUpdate.bind(thiz));
+				(0, _httpService2.default)({
+					method: 'get',
+					url: '/api/session/currentChoices'
+				}).then(function (resp) {
+					console.log(resp);
+					thiz.setState({
+						songs: resp.data
+					});
+				}).catch(function (err) {
+					console.log(err);
+				});
 			}
 		}, {
 			key: 'choicesUpdate',
@@ -35885,12 +35940,22 @@
 				});
 			}
 		}, {
+			key: 'vote',
+			value: function vote(e) {
+				var which = e.nativeEvent.target.getAttribute('data-idx');
+				_socketService2.default.emit('vote', {
+					which: which
+				});
+			}
+		}, {
 			key: 'render',
 			value: function render() {
+				var _this2 = this;
+
 				var votingButtons = this.state.songs.map(function (song, i) {
 					return _react2.default.createElement(
 						'button',
-						{ className: ['pure-button'].join(' '), key: i },
+						{ className: ['pure-button'].join(' '), key: i, onClick: _this2.vote.bind(_this2), 'data-idx': i },
 						song.name
 					);
 				});
