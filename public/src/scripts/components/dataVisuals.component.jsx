@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import Results from './results.component.jsx';
+import SVGFilter from './svgFilter.component.jsx';
 import Song from './song.component.jsx';
 import socket from '../services/socketService.jsx';
 
@@ -41,9 +43,11 @@ class DataVisuals extends Component {
 		return(
 			<div>
 				<h1>Fight!</h1>
+				<Results />
 				<div className="versus__container">
 					{ songs[0] } <div>VS</div> { songs[1] }
 				</div>
+				<SVGFilter />
 			</div>
 			)
 	}
