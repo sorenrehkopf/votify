@@ -15,9 +15,17 @@ body{
 main {
 	padding: 1em;
 
+	.cozy {
+		margin: $space--small;
+	}
+
 	h1 {
 		font-size: $font__size--h1;
 		text-align: center;
 		font-family: $font__header;
+	}
+
+	h2 + p {
+		margin-top: 0;
 	}
 }

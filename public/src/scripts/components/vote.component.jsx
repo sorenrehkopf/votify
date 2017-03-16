@@ -28,7 +28,7 @@ class Vote extends Component {
 		});
 	}
 
-	choicesUpdate(data){
+	choicesUpdate(data) {
 		console.log(data);
 		var newChoices = data.choices.map(choice=>{
 			return choice.track;
