@@ -2,9 +2,13 @@ import React, { Component } from 'react';
 
 import SpotifyService from '../services/spotifyService.jsx';
 import Http from '../services/httpService.jsx';
+import socket from '../services/socketService.jsx';
 
 import FromList from './fromList.component.jsx';
 import PlayingList from './playingList.component.jsx';
+
+var plRefreshLink1;
+var plRefreshLink2;
 
 class Admin extends Component {
 
@@ -38,7 +42,32 @@ class Admin extends Component {
 				console.log(err);
 			})
 		}
-		
+	}
+	componentDidMount(){
+		plRefreshLink1 = document.getElementById('playlistRefreshLink1');
+		plRefreshLink2 = document.getElementById('playlistRefreshLink2');
+		var thiz = this;
+		socket.on('song-set',function(e){
+			console.log('song socket!');
+			var list = thiz.state.playingList;
+			setTimeout(function(){
+				thiz.setState({
+					playingList:{uri:''}
+				})
+			},8000);
+			setTimeout(function(){
+				thiz.setState({
+					playingList:list
+				})
+				plRefreshLink2.click();
+			},10000);
+		});
+		socket.on('new-song',function(e){
+			console.log('new-song!');
+			setTimeout(function(){
+				plRefreshLink1.click();
+			},50000);
+		});
 	}
 
 	logout(){
@@ -90,15 +119,24 @@ class Admin extends Component {
 		});
 	}
 
+	togglePlaying(val){
+		console.log(val);
+		this.setState({
+			playing:val
+		});
+	}
+
 	render(){
 		return(
 			<div>
 				<h1>Welcome to the admin</h1>
 				<button onClick={this.logout}>Log me out!</button>
-				<button onClick={this.stopVoting}>Stop voting!</button>
+				<button onClick={this.stopVoting.bind(this)}>Stop voting!</button>
+				<a id="playlistRefreshLink2" href={this.state.playingList?this.state.playingList.uri:''} >the playlist link</a>
+				<a id="playlistRefreshLink1" href="spotify:album:2tzbNCAUTmW4MIM2Ulvrwl" ></a>
 				<div className="admin-controls">
 					<FromList playlist={this.state.fromList} choosePlaylist={this.setFromList.bind(this)}/>
-					<PlayingList playlist={this.state.playingList} playing={this.state.playing} setPlayingList={this.setPlayingList.bind(this)}/>
+					<PlayingList playlist={this.state.playingList} playing={this.state.playing} togglePlaying={this.togglePlaying.bind(this)} setPlayingList={this.setPlayingList.bind(this)}/>
 				</div>
 				
 			</div>

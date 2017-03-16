@@ -15,7 +15,7 @@ class DataVisuals extends Component {
 
 	componentWillMount() {
 		var thiz = this;
-		socket.on('vote', function(data){ console.log('data: ', data) });
+		socket.on('new-vote', function(data){ console.log('data: ', data) });
 		socket.on('choices', thiz.choicesUpdate.bind(thiz));
 	}
 

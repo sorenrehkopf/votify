@@ -1,4 +1,4 @@
-var paths = ['/api/auth','api/spotify'];
+var paths = ['/api/auth','api/spotify','api/session'];
 var spotifyApi = require('../services/spotifyService.js');
 
 var session = new Session();

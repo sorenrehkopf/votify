@@ -63,15 +63,15 @@ class PlayingList extends Component{
 	}
 
 	startBattle(e){
-		console.log('starting song battle!');
 		var thiz = this;
 		if(!this.props.playing){
+			console.log('starting song battle!');
 			Http({
 				method:'GET',
 				url:'/api/session/startSong'
 			}).then(resp=>{
 				console.log(resp);
-				thiz.props.playing = true;
+				thiz.props.togglePlaying(true);
 			}).catch(err=>{
 				console.log(err);
 			})

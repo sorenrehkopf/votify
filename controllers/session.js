@@ -10,6 +10,11 @@ votingService.setIo(nio);
 
 nio.on('connection',function(socket){
 	console.log('connected!!!!!!!!!!!!!!');
+	socket.on('vote',function(data){
+		console.log('new vote!!',data);
+		votingService.vote(data.which);
+		nio.emit('new-vote',data);
+	})
 });
 
 router.get('/startSong',function(req,res){
@@ -21,14 +26,21 @@ router.get('/startSong',function(req,res){
 router.get('/stop',function(req,res){
 	console.log('stopping!');
 	votingService.stop();
+	req.session.setFromList(null);
 	res.status(200).send({data:'success!'});
 })
 
-router.post('/vote',function(req,res){
-	console.log(req.body);
-	votingService.vote(req.body.which);
-	nio.emit('vote',{which:req.body.which});
-	res.send('success!');
+router.get('/currentChoices',function(req,res){
+	console.log('getting choices!');
+	var choices = votingService.choices;
+	var feChoices = [{name:'no choices yet!'}];
+	if(choices){
+		feChoices = choices.map(c=>{
+			c.track.score = 0;
+			return c.track;
+		});
+	}
+	res.send(feChoices);
 });
 
 module.exports = router;
