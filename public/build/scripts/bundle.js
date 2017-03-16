@@ -35432,6 +35432,15 @@
 						'Stop voting!'
 					),
 					_react2.default.createElement(
+						'a',
+						{ href: this.state.playingList ? this.state.playingList.uri : '' },
+						_react2.default.createElement(
+							'button',
+							null,
+							'go to spotify pls'
+						)
+					),
+					_react2.default.createElement(
 						'div',
 						{ className: 'admin-controls' },
 						_react2.default.createElement(_fromListComponent2.default, { playlist: this.state.fromList, choosePlaylist: this.setFromList.bind(this) }),

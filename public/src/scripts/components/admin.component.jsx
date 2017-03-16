@@ -96,6 +96,7 @@ class Admin extends Component {
 				<h1>Welcome to the admin</h1>
 				<button onClick={this.logout}>Log me out!</button>
 				<button onClick={this.stopVoting}>Stop voting!</button>
+				<a href={this.state.playingList?this.state.playingList.uri:''} ><button>go to spotify pls</button></a>
 				<div className="admin-controls">
 					<FromList playlist={this.state.fromList} choosePlaylist={this.setFromList.bind(this)}/>
 					<PlayingList playlist={this.state.playingList} playing={this.state.playing} setPlayingList={this.setPlayingList.bind(this)}/>
