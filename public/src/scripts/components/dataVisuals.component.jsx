@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
 
 import Song from './song.component.jsx';
+import socket from '../services/socketService.jsx';
 
 class DataVisuals extends Component {
 
 	constructor(){
 		super();
 		this.songs = ['bohemian rhapsody','another one bites the dust'];
+	}
+
+	componentWillMount() {
+		socket.on('vote', function(data){ console.log('data: ', data) });
+		socket.on('choices', function(data){ console.log('data: ', data) });
 	}
 
 	render(){

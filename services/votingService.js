@@ -50,17 +50,17 @@ function VotingService(){
 			this.choices.push(this.fromList[j]);
 			console.log(this.choices);
 			console.log(this.votes);
-			var feChoices = this.choices.map(c=>{
-				c.score = 0;
-				return c;
-			});
-			this.nio.emit('choices',{choices:feChoices})
 		}
+		var feChoices = this.choices.map(c=>{
+			c.score = 0;
+			return c;
+		});
+		this.nio.emit('choices',{choices:feChoices})
 	}
 
 	this.vote = function(i){
 		if(!this.votes) return;
-		this.votes[i] ++;
+		this.votes[i].votes ++;
 	}
 
 	this.setIo = function(io){
@@ -69,7 +69,7 @@ function VotingService(){
 
 	this.startSong = function(nio){
 		if(nio) this.nio = nio;
-		var wait = this.playingSong.duration_ms - (this.playingSong.duration_ms - 20000);
+		var wait = this.playingSong.duration_ms - (this.playingSong.duration_ms - 50000);
 		console.log(wait);
 		this.setChoices();
 		var thiz = this;
