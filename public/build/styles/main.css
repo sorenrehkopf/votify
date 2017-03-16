@@ -11,10 +11,14 @@ body {
 
 main {
   padding: 1em; }
+  main .cozy {
+    margin: 0.25em; }
   main h1 {
     font-size: 3em;
     text-align: center;
     font-family: "Audiowide", cursive; }
+  main h2 + p {
+    margin-top: 0; }
 
 .admin-controls {
   display: -webkit-box;
@@ -50,3 +54,18 @@ main {
               flex: 1; }
     .button__group .pure-button:nth-child(2) {
       margin-left: 1em; } }
+
+.versus {
+  width: 100%;
+  text-align: center; }
+
+.versus__container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center; }

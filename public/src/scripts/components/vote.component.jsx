@@ -16,7 +16,7 @@ class Vote extends Component {
 		socket.on('choices', thiz.choicesUpdate.bind(thiz));
 	}
 
-	choicesUpdate(data){
+	choicesUpdate(data) {
 		console.log(data);
 		var newChoices = data.choices.map(choice=>{
 			return choice.track;

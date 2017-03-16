@@ -26649,35 +26649,78 @@
 
 			var _this = _possibleConstructorReturn(this, (DataVisuals.__proto__ || Object.getPrototypeOf(DataVisuals)).call(this));
 
-			_this.songs = ['bohemian rhapsody', 'another one bites the dust'];
+			_this.state = {
+				songs: []
+			};
 			return _this;
 		}
 
 		_createClass(DataVisuals, [{
 			key: 'componentWillMount',
 			value: function componentWillMount() {
+				var thiz = this;
 				_socketService2.default.on('vote', function (data) {
 					console.log('data: ', data);
 				});
-				_socketService2.default.on('choices', function (data) {
-					console.log('data: ', data);
+				_socketService2.default.on('choices', thiz.choicesUpdate.bind(thiz));
+			}
+		}, {
+			key: 'choicesUpdate',
+			value: function choicesUpdate(data) {
+				console.log(data);
+				var newChoices = data.choices.map(function (choice) {
+					return choice.track;
+				});
+				this.setState({
+					songs: newChoices
 				});
 			}
 		}, {
 			key: 'render',
 			value: function render() {
-				var songs = this.songs.map(function (song, i) {
-					return _react2.default.createElement(_songComponent2.default, { songName: song, key: i });
+				var vs = _react2.default.createElement(
+					'span',
+					null,
+					'VS'
+				);
+				var songs = this.state.songs.map(function (song, i) {
+					return _react2.default.createElement(
+						'div',
+						{ className: 'versus', key: i },
+						_react2.default.createElement(
+							'h2',
+							{ className: 'cozy' },
+							song.name
+						),
+						_react2.default.createElement(
+							'p',
+							null,
+							song.artists[0].name
+						)
+					);
 				});
+
 				return _react2.default.createElement(
 					'div',
 					null,
 					_react2.default.createElement(
 						'h1',
 						null,
-						'Welcome to the data visualization'
+						'Fight!'
 					),
-					songs
+					_react2.default.createElement(
+						'div',
+						{ className: 'versus__container' },
+						songs[0],
+						' ',
+						_react2.default.createElement(
+							'div',
+							null,
+							'VS'
+						),
+						' ',
+						songs[1]
+					)
 				);
 			}
 		}]);
