@@ -12,12 +12,8 @@ class DataVisuals extends Component {
 	}
 
 	componentWillMount() {
-<<<<<<< HEAD
-		socket.on('new-vote', function(data){ console.log('data: ', data) });
-		socket.on('choices', function(data){ console.log('data: ', data) });
-=======
 		var thiz = this;
-		socket.on('vote', function(data){ console.log('data: ', data) });
+		socket.on('new-vote', function(data){ console.log('data: ', data) });
 		socket.on('choices', thiz.choicesUpdate.bind(thiz));
 	}
 
@@ -29,7 +25,6 @@ class DataVisuals extends Component {
 		this.setState({
 			songs:newChoices
 		});
->>>>>>> 359aa25aeaf23a1a4ab6b136de5da0a660ef11b5
 	}
 
 	render(){
