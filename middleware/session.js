@@ -46,7 +46,12 @@ function Session(){
 	}
 
 	function checkToken(token){
-		return token === this.sessionToken;
+		if(this.sessionToken){
+			return token === this.sessionToken;
+		}else{
+			return false;
+		}
+		
 	}
 
 	function getToken(){
