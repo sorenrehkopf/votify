@@ -30,6 +30,12 @@ router.get('/stop',function(req,res){
 	res.status(200).send({data:'success!'});
 })
 
+router.post('/vote',function(req,res){
+	console.log('vote!',req.body);
+	votingService.vote(req.body.which);
+	res.send('success');
+});
+
 router.get('/currentChoices',function(req,res){
 	console.log('getting choices!');
 	var choices = votingService.choices;
