@@ -35387,8 +35387,8 @@
 			value: function componentWillMount() {
 				var thiz = this;
 				if (window.location.search) {
-					var token = window.location.search.replace('?auth_token=', '');
-					window.localStorage.setItem('auth_token', token);
+					var token = window.location.search.replace('?authtoken=', '');
+					window.localStorage.setItem('authtoken', token);
 					window.location.href = window.location.origin + window.location.pathname;
 				} else {
 					(0, _httpService2.default)({
@@ -35442,7 +35442,7 @@
 					method: 'GET',
 					url: '/api/auth/logout'
 				}).then(function (data) {
-					window.localStorage.removeItem('auth_token');
+					window.localStorage.removeItem('authtoken');
 					window.location.href = '/';
 				});
 			}
@@ -35588,7 +35588,7 @@
 		value: true
 	});
 	function Http(config, noAuth) {
-		var authHeader = window.localStorage.getItem('auth_token');
+		var authHeader = window.localStorage.getItem('authtoken');
 		var data = null;
 		return new Promise(function (resolve, reject) {
 			var http = new XMLHttpRequest();

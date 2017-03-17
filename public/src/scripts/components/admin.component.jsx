@@ -22,8 +22,8 @@ class Admin extends Component {
 	componentWillMount(){
 		var thiz = this;
 		if(window.location.search){
-			var token = window.location.search.replace('?auth_token=','');
-			window.localStorage.setItem('auth_token',token);
+			var token = window.location.search.replace('?authtoken=','');
+			window.localStorage.setItem('authtoken',token);
 			window.location.href = window.location.origin+window.location.pathname;
 		}else{
 			Http({
@@ -75,7 +75,7 @@ class Admin extends Component {
 			method:'GET',
 			url:'/api/auth/logout'
 		}).then(function(data){
-			window.localStorage.removeItem('auth_token');
+			window.localStorage.removeItem('authtoken');
 			window.location.href = '/';
 		})
 	}

@@ -1,5 +1,5 @@
 function Http(config,noAuth){
-	var authHeader = window.localStorage.getItem('auth_token');
+	var authHeader = window.localStorage.getItem('authtoken');
 	var data = null;
 	return new Promise(function(resolve,reject){
 		var http = new XMLHttpRequest();
