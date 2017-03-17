@@ -42,6 +42,7 @@ router.get('/handleauth',function(req,res){
 
 router.get('/check',function(req,res){
 	var loggedIn = req.session.checkToken(req.headers.auth_token);
+	console.log(req.headers.auth_token);
 	console.log('loggedIn',loggedIn);
 	var resp = loggedIn?{toList:votingService.toList,fromList:req.session.getFromList()}:false;
 	console.log(resp);
