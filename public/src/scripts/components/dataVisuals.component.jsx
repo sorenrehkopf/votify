@@ -9,49 +9,90 @@ class DataVisuals extends Component {
 	constructor(){
 		super();
 		this.state = {
-			songs:[]
+			songs: [],
+			votesA: 0,
+			votesB: 0
+		},
+		this.svg = {
+			id: '#visualization',
+			width: 1000,
+			height: 800,
+			radius: 25,
+			strength: 0.5
 		}
 	}
 
 	componentWillMount() {
 		var thiz = this;
-		socket.on('new-vote', function(data){ console.log('data: ', data) });
+		socket.on('new-vote', thiz.getVotes.bind(thiz));
 		socket.on('choices', thiz.choicesUpdate.bind(thiz));
 	}
 
 	choicesUpdate(data) {
-		console.log(data);
 		var newChoices = data.choices.map(choice=>{
 			return choice.track;
 		});
 		this.setState({
-			songs:newChoices
+			songs: newChoices
 		});
 	}
 
-	render(){
-		var vs = <span>VS</span>;
-		var songs = this.state.songs.map((song,i)=>{
-			return (
-				<div className='versus' key={i}>
-					<h2 className='cozy'>{ song.name }</h2>
-					<p>{ song.artists[0].name }</p>
-				</div>
-			)
-		});
-
-		return(
-			<div>
-				<h1>Fight!</h1>
-				<Results />
-				<div className="versus__container">
-					{ songs[0] } <div>VS</div> { songs[1] }
-				</div>
-				<SVGFilter />
-			</div>
-			)
+	getVotes(data) {
+		var newVotes = data.which;
+		if (newVotes === '0') {
+			this.state.votesA++;
+			console.log('votesA: ', this.state.votesA);
+		} else {
+			this.state.votesB++;
+			console.log('votesB: ', this.state.votesB);
+		}
 	}
 
+	render() {
+		var el = null;
+		var songs = this.state.songs;
+		var svg = this.svg;
+		console.log('songs: ', songs);
+
+		// if (songs.length === 0) {
+		// 	el = (
+		// 		<div className="flex flex__center">
+		// 			<h2>Preparing song battle...</h2>
+		// 		</div>
+		// 	)
+		// } else {
+
+			var getSong = songs.map((song,i) => {
+				return (
+					<div className='versus' key={i}>
+						<h2 className='cozy'>{ song.name }</h2>
+						<p>{ song.artists[0].name }</p>
+					</div>
+				)
+			})
+
+			el = (
+				<div>
+					<h1>Fight!</h1>
+					<Results
+						id={ svg.id }
+						width={ svg.width }
+						height={ svg.height }
+						radius={ svg.radius }
+						strength={ svg.strength }
+						voteA={ this.state.votesA }
+						voteB={ this.state.votesB }
+					 />
+					<div className="flex versus__container">
+						{ getSong[0] } <div>VS</div> { getSong[1] }
+					</div>
+					<SVGFilter />
+				</div>
+			)
+		//}
+
+		return el;
+	}
 }
 
 export default DataVisuals;
