@@ -35593,7 +35593,7 @@
 		return new Promise(function (resolve, reject) {
 			var http = new XMLHttpRequest();
 			http.open(config.method, config.url);
-			if (!noAuth) http.setRequestHeader('auth_token', authHeader);
+			if (!noAuth) http.setRequestHeader('authtoken', authHeader);
 			if (config.data) {
 				http.setRequestHeader('Content-Type', 'application/json');
 				data = JSON.stringify(config.data);
