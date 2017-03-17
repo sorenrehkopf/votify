@@ -26795,7 +26795,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var socket = (0, _socket2.default)('http://10.144.81.72:3000/socketspace');
+	var socket = (0, _socket2.default)('https://www.spotipie.com/socketspace');
 	exports.default = socket;
 
 /***/ },

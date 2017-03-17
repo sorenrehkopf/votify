@@ -1,3 +1,3 @@
 import io from "socket.io-client"
-var socket = io('http://10.144.81.72:3000/socketspace')
+var socket = io('https://www.spotipie.com/socketspace')
 export default socket
