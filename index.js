@@ -4,7 +4,7 @@ var server = module.exports = require('http').Server(app);
 var bodyParser = require('body-parser');
 var cors = require('cors');
 
-require('dotenv').config();
+require('dotenv').load();
 
 app.use(cors());
 app.use(bodyParser.json());
