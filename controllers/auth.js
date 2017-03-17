@@ -28,7 +28,7 @@ router.get('/handleauth',function(req,res){
 		    	console.log('got me!!',data);
 		    	req.session.setUser(data.body);
 		    })
-		    res.redirect('http://localhost:3030/admin?auth_token='+token);
+		    res.redirect('/admin?auth_token='+token);
 		  }, function(err) {
 		    console.log('Something went wrong!', err);
 		  })
