@@ -69,7 +69,7 @@ function VotingService(){
 
 	this.startSong = function(nio){
 		if(nio) this.nio = nio;
-		var wait = this.playingSong.duration_ms - (this.playingSong.duration_ms - 10000);
+		var wait = this.playingSong.duration_ms - 30000;
 		console.log(wait);
 		this.setChoices();
 		var thiz = this;
