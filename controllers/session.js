@@ -31,8 +31,8 @@ router.get('/stop',function(req,res){
 })
 
 router.post('/vote',function(req,res){
-	console.log('vote!',req.body);
 	votingService.vote(req.body.which);
+	nio.emit('new-vote',req.body);
 	res.send('success');
 });
 
