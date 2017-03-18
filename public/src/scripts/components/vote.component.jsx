@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Song from './song.component.jsx';
+import Voted from './hasVoted.component.jsx';
 
 import Http from '../services/httpService.jsx';
 import socket from '../services/socketService.jsx';
@@ -8,8 +9,10 @@ class Vote extends Component {
 	constructor(){
 		super();
 		this.state = {
-			songs:[]
+			songs:[],
+			voted:false
 		}
+		this.voted;
 	}
 
 	componentWillMount() {
@@ -39,15 +42,29 @@ class Vote extends Component {
 	}
 
 	vote(e){
-		var which = e.nativeEvent.target.getAttribute('data-idx');
-		socket.emit('vote',{
-			which:which
-		});
+		var thiz = this;
+		if (!this.state.voted) {
+			var which = e.nativeEvent.target.getAttribute('data-idx');
+			socket.emit('vote',{
+				which:which
+			});
+
+			thiz.setState({
+				voted:true
+			});
+			setTimeout(function(){
+				this.voted = true;
+				thiz.setState({
+					voted:false
+				});
+			},1000);
+		}
 	}
 
 	render(){
+
 		var votingButtons = this.state.songs.map((song,i)=>{
-			return <button className={['pure-button'].join(' ')} key={i} onClick={this.vote.bind(this)} data-idx={i}>{song.name}</button>
+			return <button className="pure-button" key={i} disabled={this.state.voted} onClick={this.vote.bind(this)} data-idx={i}>{song.name}</button>
 		});
 
 		return(
@@ -56,6 +73,8 @@ class Vote extends Component {
 				<div className="button__group">
 					{ votingButtons }
 				</div>
+
+				<Voted showMe={this.state.voted} />
 			</div>
 		)
 	}

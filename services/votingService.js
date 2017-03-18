@@ -38,7 +38,7 @@ function VotingService(){
 
 	this.setChoices = function(n){
 		n = n || 2;
-		if(!this.fromList) return;
+		if(!this.fromList || this.fromList.length<2) return;
 		this.choices = [];
 		this.votes = [];
 		var used = []
@@ -69,6 +69,7 @@ function VotingService(){
 
 	this.startSong = function(nio){
 		if(nio) this.nio = nio;
+		if(!this.fromList || this.fromList.length<2) return;
 		var wait = this.playingSong.duration_ms - 30000;
 		console.log(wait);
 		this.setChoices();
