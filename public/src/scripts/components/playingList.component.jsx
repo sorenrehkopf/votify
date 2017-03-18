@@ -19,7 +19,7 @@ class PlayingList extends Component{
 		e.preventDefault();
 		var thiz = this;
 		var title = e.target.querySelector('[name="playlist-name"]').value;
-		Http({	
+		Http({
 			method:'POST',
 			url:'/api/spotify/createPlaylist',
 			data:{

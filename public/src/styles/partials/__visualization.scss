@@ -4,7 +4,19 @@
 }
 
 .versus__container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+
+}
+
+svg.bubbles {
+  filter: url('#goo');
+  transform: translate(0,0);
+
+  & > circle.bubble {
+    fill: #7fffd4;
+    transition: radius 2s cubic-bezier(.66,.1,.97,.36);
+  }
+
+  & > circle.bubble[data-song=SongB] {
+    fill: pink;
+  }
 }
