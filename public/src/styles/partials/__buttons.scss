@@ -1,6 +1,6 @@
 .button__group {
   font-size: 15px;
-  
+
   .pure-button {
     font-size: 2em;
     display: block;
@@ -18,5 +18,11 @@
     .pure-button:nth-child(2) {
       margin-left: $space;
     }
+  }
+}
+
+.pure-button {
+  &.block {
+    display: block;
   }
 }
