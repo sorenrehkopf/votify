@@ -24,8 +24,8 @@ import Http from '../services/httpService.jsx';
 //   createBubbles();
 // }, 2000);
 
-var width = 1000,
-    height = 800,
+var width = window.innerWidth,
+    height = window.innerHeight - 300,
     strength = 0.5,
     radius = 25;
 
@@ -62,10 +62,9 @@ function doStuff(votes){
 function createBubbles(votes) {
 
   var bubbles = svg.selectAll('.bubble')
-    // .data(votes)
+    .data(votes)
     // .enter()
     // .append('circle')
-    .attr('class', 'bubble')
     .attr('data-song', d => d.name.replace(/\s/g, ''))
     .attr('r', radius)
 
@@ -80,7 +79,7 @@ function createBubbles(votes) {
   }
 }
 
-var names = ['a','b','c'];
+var names = ['A','B','C'];
 
 class Results extends Component {
   displayName: 'ResultsSVG';
@@ -109,8 +108,17 @@ class Results extends Component {
         votes.push({name:name});
       }
     });
+    console.log(this.props.songs);
     this.setState({
       votes:votes
+    });
+    doStuff(this.state.votes);
+  }
+
+  componentWillReceiveProps(){
+    console.log('receiving props!')
+    this.setState({
+      votes:[]
     });
     doStuff(this.state.votes);
   }
@@ -119,20 +127,11 @@ class Results extends Component {
     var votes = [];
     doStuff(this.state.votes);
     console.log('updating!!');
-    // this.props.songs.forEach((song,i)=>{
-    //   var name = 'Song '+names[i];
-    //   for(var j=0;j<song.score;j++){
-    //     votes.push({name:name});
-    //   }
-    // });
-    // this.setState({
-    //   votes:votes
-    // });
   }
 
   getVotes(data) {
     console.log(data.which);
-    var name = Number(data.which)?'Song A':'Song B';
+    var name = Number(data.which)?'Song B':'Song A';
     var votes = this.state.votes;
     votes.push({name: name});
     this.setState({
@@ -142,11 +141,11 @@ class Results extends Component {
 
   render() {
     var circles = this.state.votes.map((vote,i)=>{
-      // return (<circle className="bubble" key={i}></circle>);
+      return (<circle className="bubble" key={i}></circle>);
     });
     return (
       <svg id='visualization' className='bubbles'>
-        // {circles}
+        {circles}
       </svg>
     )
   }

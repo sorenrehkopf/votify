@@ -36,7 +36,7 @@ router.get('/currentChoices',function(req,res){
 	var feChoices = [{name:'no choices yet!'}];
 	if(choices){
 		feChoices = choices.map((c,i)=>{
-			c.track.score = votingService.votes[i];
+			c.track.score = votingService.votes[i].votes;
 			return c.track;
 		});
 	}
