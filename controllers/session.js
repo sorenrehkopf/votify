@@ -30,13 +30,19 @@ router.get('/stop',function(req,res){
 	res.status(200).send({data:'success!'});
 })
 
+router.post('/vote',function(req,res){
+	votingService.vote(req.body.which);
+	nio.emit('new-vote',req.body);
+	res.send('success');
+});
+
 router.get('/currentChoices',function(req,res){
 	console.log('getting choices!');
 	var choices = votingService.choices;
 	var feChoices = [{name:'no choices yet!'}];
 	if(choices){
-		feChoices = choices.map(c=>{
-			c.track.score = 0;
+		feChoices = choices.map((c,i)=>{
+			c.track.score = votingService.votes[i].votes;
 			return c.track;
 		});
 	}

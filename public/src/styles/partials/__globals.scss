@@ -12,12 +12,12 @@ body{
 	margin: 0 auto;
 }
 
+.cozy {
+	margin: $space--small;
+}
+
 main {
 	padding: 1em;
-
-	.cozy {
-		margin: $space--small;
-	}
 
 	h1 {
 		font-size: $font__size--h1;
@@ -27,5 +27,16 @@ main {
 
 	h2 + p {
 		margin-top: 0;
+	}
+}
+
+.flex {
+	display: flex;
+  align-items: center;
+  justify-content: center;
+
+	&__center {
+		height: 100vh;
+		align-content: center;
 	}
 }
