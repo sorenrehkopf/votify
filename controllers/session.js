@@ -28,6 +28,8 @@ router.get('/stop',function(req,res){
 	votingService.stop();
 	req.session.setFromList(null);
 	res.status(200).send({data:'success!'});
+	votingService.votes = false;
+	votingService.choices = false;
 })
 
 router.post('/vote',function(req,res){
