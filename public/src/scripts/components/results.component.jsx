@@ -50,7 +50,6 @@ var simulation = d3.forceSimulation()
 
 
 function doStuff(votes){
-  console.log(votes);
   createBubbles(votes);
   simulation
       .force('x', forceX)
@@ -126,11 +125,9 @@ class Results extends Component {
   componentDidUpdate(){
     var votes = [];
     doStuff(this.state.votes);
-    console.log('updating!!');
   }
 
   getVotes(data) {
-    console.log(data.which);
     var name = Number(data.which)?'Song B':'Song A';
     var votes = this.state.votes;
     votes.push({name: name});
