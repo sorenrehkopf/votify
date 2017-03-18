@@ -11,11 +11,12 @@ const gulp = require('gulp'),
 
 const paths = {
 	scripts:['public/src/scripts/**/*.jsx'],
-	styles:['public/src/styles/main.scss','public/src/styles/**/*.scss']
+	styles:['public/src/styles/main.scss','public/src/styles/**/*.scss'],
+	assets:['public/src/assets/*.*']
 }
 
 gulp.task('start',['build','watch','serve']);
-gulp.task('build',['build:scripts','build:styles']);
+gulp.task('build',['build:scripts','build:styles','copy:assets']);
 gulp.task('watch',['watch:scripts','watch:styles']);
 
 gulp.task('serve',function(){
