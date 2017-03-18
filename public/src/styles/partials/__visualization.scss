@@ -3,10 +3,6 @@
   text-align: center;
 }
 
-.versus__container {
-
-}
-
 svg.bubbles {
   filter: url('#goo');
   transform: translate(0,0);
@@ -18,5 +14,31 @@ svg.bubbles {
 
   & > circle.bubble[data-song=SongB] {
     fill: pink;
+  }
+}
+
+div#visualization {
+  position: relative;
+
+  .evee {
+    position: absolute;
+    display: inline-block;
+    width: 265px;
+    height: 267px;
+    background: url('../assets/evee-01.svg') 0 0;
+    animation: all-the-evees 1s steps(2) infinite;
+  }
+
+  .evee[data-song=SongA] {
+    width: 265px;
+    height: 134px;
+    background: url('../assets/evee-02.svg') 0 0;
+    animation: all-the-evees 1s steps(4) infinite;
+  }
+}
+
+@keyframes all-the-evees {
+  100% {
+    background-position: 0 -535px;
   }
 }

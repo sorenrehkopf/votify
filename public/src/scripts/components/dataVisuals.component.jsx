@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import Results from './results.component.jsx';
+import Results from './evees.component.jsx';
 import SVGFilter from './svgFilter.component.jsx';
 import Song from './song.component.jsx';
 import socket from '../services/socketService.jsx';
