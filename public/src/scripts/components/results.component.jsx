@@ -1,84 +1,153 @@
 import React, { Component } from 'react';
 
 import * as d3 from 'd3';
+import socket from '../services/socketService.jsx';
+import Http from '../services/httpService.jsx';
+
+// var repeat = setInterval(function(){
+//   dataInputs.interval(50, function(request){
+//     voteA += request;
+//     votes.push({
+//       name: 'Song A',
+//       total: voteA
+//     });
+//   });
+//   dataInputs.interval(20, function(request){
+//     voteB += request;
+//     votes.push({
+//       name: 'Song B',
+//       total: voteB
+//     });
+//   });
+
+//   console.log(votes);
+//   createBubbles();
+// }, 2000);
+
+var width = 1000,
+    height = 800,
+    strength = 0.5,
+    radius = 25;
+
+var svg;
+
+// simulation is a collection of forces telling circles where to go
+
+var forceX = d3.forceX( function(d) {
+  if(d.name === 'Song A') {
+     return width / 2 - radius*2;
+   } else {
+     return width / 2 + radius*3;
+   }
+}).strength(strength)
+var forceY = d3.forceY( d => height / 2).strength(strength)
+var forceCollide = d3.forceCollide( d => radius + 5);
+
+var simulation = d3.forceSimulation()
+  .force('x', forceX)
+  .force('y', forceY)
+  .force('collide', forceCollide)
+
+
+function doStuff(votes){
+  console.log(votes);
+  createBubbles(votes);
+  simulation
+      .force('x', forceX)
+      .alphaTarget(strength)
+      .restart()
+}
+
+
+function createBubbles(votes) {
+
+  var bubbles = svg.selectAll('.bubble')
+    // .data(votes)
+    // .enter()
+    // .append('circle')
+    .attr('class', 'bubble')
+    .attr('data-song', d => d.name.replace(/\s/g, ''))
+    .attr('r', radius)
+
+  simulation.nodes(votes)
+    .on('tick', ticked)
+
+  // Fires everytime on tick
+  function ticked() {
+    bubbles
+      .attr('cx', d => d.x )
+      .attr('cy', d => d.y );
+  }
+}
+
+var names = ['a','b','c'];
 
 class Results extends Component {
   displayName: 'ResultsSVG';
 
-  propTypes: {
-    id: PropTypes.string,
-    width: PropTypes.number,
-    height: PropTypes.number,
-    radius: PropTypes.number,
-    strength: PropTypes.number,
-    voteA: PropTypes.number,
-    voteB: PropTypes.number
+  constructor(){
+    super();
+    this.state = {
+      votes:[]
+    }
   }
 
-  votes: [];
+  componentWillMount() {
+		var thiz = this;
+		socket.on('new-vote', thiz.getVotes.bind(thiz));
+	}
 
   componentDidMount() {
-    this.drawResults();
-  }
-
-  drawResults() {
-    const context = this.setContext();
-    const simulation = this.applyForce();
-    this.createBubbles(context);
-    //this.applySimulation(simulation);
-    //this.ticked();
-  }
-
-  setContext() {
-    const { width, height, id } = this.props;
-    return (
-      d3.select(id)
+    var votes = [];
+    svg = d3.select('#visualization')
         .attr('width', width)
         .attr('height', height)
-    )
+        .attr('transform', 'translate(0,0)');
+    this.props.songs.forEach((song,i)=>{
+      var name = 'Song '+names[i];
+      for(var j=0;j<song.score;j++){
+        votes.push({name:name});
+      }
+    });
+    this.setState({
+      votes:votes
+    });
+    doStuff(this.state.votes);
   }
 
-  applyForce() {
-    return d3.forceSimulation()
-      .force('x', d3.forceX( function(d) {
-        if(d.name === 'Song A') {
-           return this.props.width / 2 - this.props.radius*2;
-         } else {
-           return this.props.width / 2 + this.props.radius*3;
-         }
-      }).strength(this.props.strength))
-      .force('y', d3.forceY( d => this.props.height / 2).strength(this.props.strength))
-      .force('collide', d3.forceCollide( d => this.props.radius + 5))
+  componentDidUpdate(){
+    var votes = [];
+    doStuff(this.state.votes);
+    console.log('updating!!');
+    // this.props.songs.forEach((song,i)=>{
+    //   var name = 'Song '+names[i];
+    //   for(var j=0;j<song.score;j++){
+    //     votes.push({name:name});
+    //   }
+    // });
+    // this.setState({
+    //   votes:votes
+    // });
   }
 
-  createBubbles(context) {
-    return (
-      context.selectAll('.bubble')
-        .data({ pollResults: this.votes })
-        .enter()
-        .append('circle')
-        .attr('className', 'bubble')
-        .attr('data-song', d => d.name.replace(/\s/g, ''))
-        .attr('r', this.props.radius)
-    )
-  }
-
-  applySimulation(simulation) {
-    return (
-      simulation.nodes(this.votes)
-        .on('tick', ticked)
-    )
-  }
-
-  ticked() {
-    return bubbles
-      .attr('cx', d => d.x )
-      .attr('cy', d => d.y );
+  getVotes(data) {
+    console.log(data.which);
+    var name = Number(data.which)?'Song A':'Song B';
+    var votes = this.state.votes;
+    votes.push({name: name});
+    this.setState({
+      votes:votes
+    });
   }
 
   render() {
+    var circles = this.state.votes.map((vote,i)=>{
+      // return (<circle className="bubble" key={i}></circle>);
+    });
     return (
-      <svg id='visualization' className='bubbles'></svg>
+      <svg id='visualization' className='bubbles'>
+        // {circles}
+      </svg>
     )
   }
 }
