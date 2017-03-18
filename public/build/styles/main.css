@@ -9,16 +9,32 @@ body {
 #app {
   margin: 0 auto; }
 
+.cozy {
+  margin: 0.25em; }
+
 main {
   padding: 1em; }
-  main .cozy {
-    margin: 0.25em; }
   main h1 {
     font-size: 3em;
     text-align: center;
     font-family: "Audiowide", cursive; }
   main h2 + p {
     margin-top: 0; }
+
+.flex {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center; }
+  .flex__center {
+    height: 100vh;
+    -ms-flex-line-pack: center;
+        align-content: center; }
 
 .admin-controls {
   display: -webkit-box;
@@ -59,13 +75,14 @@ main {
   width: 100%;
   text-align: center; }
 
-.versus__container {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center; }
+svg.bubbles {
+  -webkit-filter: url("#goo");
+          filter: url("#goo");
+  -webkit-transform: translate(0, 0);
+          transform: translate(0, 0); }
+  svg.bubbles > circle.bubble {
+    fill: #7fffd4;
+    -webkit-transition: radius 2s cubic-bezier(0.66, 0.1, 0.97, 0.36);
+    transition: radius 2s cubic-bezier(0.66, 0.1, 0.97, 0.36); }
+  svg.bubbles > circle.bubble[data-song=SongB] {
+    fill: pink; }
