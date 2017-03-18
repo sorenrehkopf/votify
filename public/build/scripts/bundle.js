@@ -26625,9 +26625,9 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _resultsComponent = __webpack_require__(235);
+	var _eveesComponent = __webpack_require__(235);
 
-	var _resultsComponent2 = _interopRequireDefault(_resultsComponent);
+	var _eveesComponent2 = _interopRequireDefault(_eveesComponent);
 
 	var _svgFilterComponent = __webpack_require__(291);
 
@@ -26644,6 +26644,8 @@
 	var _httpService = __webpack_require__(290);
 
 	var _httpService2 = _interopRequireDefault(_httpService);
+
+	var _reactRouter = __webpack_require__(178);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -26707,9 +26709,18 @@
 						'div',
 						{ className: 'flex flex__center' },
 						_react2.default.createElement(
-							'h2',
-							null,
-							'Preparing song battle...'
+							'div',
+							{ className: 'flex__col center' },
+							_react2.default.createElement(
+								'h2',
+								null,
+								'Preparing song battle...'
+							),
+							_react2.default.createElement(
+								_reactRouter.Link,
+								{ className: 'pure-button', to: '/vote' },
+								'Vote Now'
+							)
 						)
 					);
 				} else {
@@ -26734,11 +26745,24 @@
 						'div',
 						null,
 						_react2.default.createElement(
-							'h1',
-							null,
-							'Fight!'
+							'div',
+							{ className: 'flex' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'flex__col center' },
+								_react2.default.createElement(
+									'h1',
+									null,
+									'Fight!'
+								),
+								_react2.default.createElement(
+									_reactRouter.Link,
+									{ className: 'pure-button', to: '/vote' },
+									'Vote Now'
+								)
+							)
 						),
-						_react2.default.createElement(_resultsComponent2.default, { songs: this.state.songs }),
+						_react2.default.createElement(_eveesComponent2.default, { songs: this.state.songs }),
 						_react2.default.createElement(
 							'div',
 							{ className: 'flex versus__container' },
@@ -26803,30 +26827,10 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	// var repeat = setInterval(function(){
-	//   dataInputs.interval(50, function(request){
-	//     voteA += request;
-	//     votes.push({
-	//       name: 'Song A',
-	//       total: voteA
-	//     });
-	//   });
-	//   dataInputs.interval(20, function(request){
-	//     voteB += request;
-	//     votes.push({
-	//       name: 'Song B',
-	//       total: voteB
-	//     });
-	//   });
-
-	//   console.log(votes);
-	//   createBubbles();
-	// }, 2000);
-
 	var width = window.innerWidth,
 	    height = window.innerHeight - 300,
-	    strength = 0.5,
-	    radius = 25;
+	    strength = 0.25,
+	    radius = 50;
 
 	var svg;
 
@@ -26834,9 +26838,9 @@
 
 	var forceX = d3.forceX(function (d) {
 	  if (d.name === 'Song A') {
-	    return width / 2 - radius * 2;
+	    return width / 2 - radius * 7;
 	  } else {
-	    return width / 2 + radius * 3;
+	    return width / 2 + radius;
 	  }
 	}).strength(strength);
 	var forceY = d3.forceY(function (d) {
@@ -26850,12 +26854,29 @@
 
 	function doStuff(votes) {
 	  console.log(votes);
-	  createBubbles(votes);
+	  iChooseYou(votes);
 	  simulation.force('x', forceX).alphaTarget(strength).restart();
 	}
 
-	function createBubbles(votes) {
+	function iChooseYou(votes) {
+	  var evees = svg.selectAll('.evee').data(votes)
+	  // .enter()
+	  // .append('circle')
+	  .attr('data-song', function (d) {
+	    return d.name.replace(/\s/g, '');
+	  }).style('width', radius).style('height', radius);
 
+	  simulation.nodes(votes).on('tick', ticked);
+
+	  // Fires everytime on tick
+	  function ticked() {
+	    evees.style('transform', function (d) {
+	      return 'translate(' + d.x + 'px,' + d.y + 'px)';
+	    });
+	  }
+	}
+
+	function createBubbles(votes) {
 	  var bubbles = svg.selectAll('.bubble').data(votes)
 	  // .enter()
 	  // .append('circle')
@@ -26901,7 +26922,8 @@
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
 	      var votes = [];
-	      svg = d3.select('#visualization').attr('width', width).attr('height', height).attr('transform', 'translate(0,0)');
+	      svg = d3.select('#visualization').style('width', width + 'px').style('height', height + 'px');
+
 	      this.props.songs.forEach(function (song, i) {
 	        var name = 'Song ' + names[i];
 	        for (var j = 0; j < song.score; j++) {
@@ -26945,11 +26967,11 @@
 	    key: 'render',
 	    value: function render() {
 	      var circles = this.state.votes.map(function (vote, i) {
-	        return _react2.default.createElement('circle', { className: 'bubble', key: i });
+	        return _react2.default.createElement('div', { className: 'evee', key: i });
 	      });
 	      return _react2.default.createElement(
-	        'svg',
-	        { id: 'visualization', className: 'bubbles' },
+	        'div',
+	        { id: 'visualization' },
 	        circles
 	      );
 	    }
@@ -26957,6 +26979,16 @@
 
 	  return Results;
 	}(_react.Component);
+
+	// .attr('width', width)
+	// .attr('height', height)
+	// .attr('transform', 'translate(0,0)');
+
+	// <circle className="bubble" key={i}></circle>
+
+	// <svg id='visualization' className='bubbles'>
+	//   {circles}
+	// </svg>
 
 	exports.default = Results;
 
@@ -52775,6 +52807,10 @@
 
 	var _songComponent2 = _interopRequireDefault(_songComponent);
 
+	var _hasVotedComponent = __webpack_require__(298);
+
+	var _hasVotedComponent2 = _interopRequireDefault(_hasVotedComponent);
+
 	var _httpService = __webpack_require__(290);
 
 	var _httpService2 = _interopRequireDefault(_httpService);
@@ -52800,8 +52836,10 @@
 			var _this = _possibleConstructorReturn(this, (Vote.__proto__ || Object.getPrototypeOf(Vote)).call(this));
 
 			_this.state = {
-				songs: []
+				songs: [],
+				voted: false
 			};
+			_this.voted;
 			return _this;
 		}
 
@@ -52836,10 +52874,23 @@
 		}, {
 			key: 'vote',
 			value: function vote(e) {
-				var which = e.nativeEvent.target.getAttribute('data-idx');
-				_socketService2.default.emit('vote', {
-					which: which
-				});
+				var thiz = this;
+				if (!this.state.voted) {
+					var which = e.nativeEvent.target.getAttribute('data-idx');
+					_socketService2.default.emit('vote', {
+						which: which
+					});
+
+					thiz.setState({
+						voted: true
+					});
+					setTimeout(function () {
+						this.voted = true;
+						thiz.setState({
+							voted: false
+						});
+					}, 1000);
+				}
 			}
 		}, {
 			key: 'render',
@@ -52849,7 +52900,7 @@
 				var votingButtons = this.state.songs.map(function (song, i) {
 					return _react2.default.createElement(
 						'button',
-						{ className: ['pure-button'].join(' '), key: i, onClick: _this2.vote.bind(_this2), 'data-idx': i },
+						{ className: 'pure-button', key: i, disabled: _this2.state.voted, onClick: _this2.vote.bind(_this2), 'data-idx': i },
 						song.name
 					);
 				});
@@ -52866,7 +52917,8 @@
 						'div',
 						{ className: 'button__group' },
 						votingButtons
-					)
+					),
+					_react2.default.createElement(_hasVotedComponent2.default, { showMe: this.state.voted })
 				);
 			}
 		}]);
@@ -52875,6 +52927,74 @@
 	}(_react.Component);
 
 	exports.default = Vote;
+
+/***/ },
+/* 298 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Voted = function (_Component) {
+	  _inherits(Voted, _Component);
+
+	  function Voted() {
+	    _classCallCheck(this, Voted);
+
+	    return _possibleConstructorReturn(this, (Voted.__proto__ || Object.getPrototypeOf(Voted)).apply(this, arguments));
+	  }
+
+	  _createClass(Voted, [{
+	    key: "render",
+	    value: function render() {
+
+	      var el = null;
+	      if (this.props.showMe) {
+	        el = _react2.default.createElement(
+	          "div",
+	          { className: "voted" },
+	          _react2.default.createElement(
+	            "div",
+	            { className: "flex flex__center" },
+	            _react2.default.createElement(
+	              "div",
+	              { className: "flex__content center" },
+	              _react2.default.createElement(
+	                "h1",
+	                null,
+	                "Oh Yes"
+	              ),
+	              _react2.default.createElement("img", { src: "build/assets/thumbs-up-01.svg", alt: "Thumbs Up" })
+	            )
+	          )
+	        );
+	      }
+
+	      return el;
+	    }
+	  }]);
+
+	  return Voted;
+	}(_react.Component);
+
+	exports.default = Voted;
 
 /***/ }
 /******/ ]);

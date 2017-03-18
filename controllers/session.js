@@ -27,7 +27,7 @@ router.get('/stop',function(req,res){
 	req.session.setFromList(null);
 	res.status(200).send({data:'success!'});
 	votingService.votes = false;
-	votingService.choices = [];
+	votingService.choices = false;
 })
 
 router.post('/vote',function(req,res){

@@ -16,6 +16,10 @@ body{
 	margin: $space--small;
 }
 
+.center {
+	text-align: center;
+}
+
 main {
 	padding: 1em;
 
@@ -23,6 +27,7 @@ main {
 		font-size: $font__size--h1;
 		text-align: center;
 		font-family: $font__header;
+		margin-bottom: $space--small;
 	}
 
 	h2 + p {
@@ -36,7 +41,11 @@ main {
   justify-content: center;
 
 	&__center {
-		height: 100vh;
+		height: 90vh;
 		align-content: center;
+
+		@include breakpoint(mobile--plus) {
+			height: 100vh;
+		}
 	}
 }
