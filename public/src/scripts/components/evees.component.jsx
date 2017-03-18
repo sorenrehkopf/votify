@@ -6,17 +6,18 @@ import Http from '../services/httpService.jsx';
 
 var width = window.innerWidth,
     height = window.innerHeight - 300,
-    strength = 0.5,
-    radius = 25;
+    strength = 0.25,
+    radius = 50;
 
 var svg;
 
 // simulation is a collection of forces telling circles where to go
+
 var forceX = d3.forceX( function(d) {
   if(d.name === 'Song A') {
-     return width / 2 - radius*2;
+     return width / 2 - radius*7;
    } else {
-     return width / 2 + radius*3;
+     return width / 2 + radius;
    }
 }).strength(strength)
 var forceY = d3.forceY( d => height / 2).strength(strength)
@@ -27,13 +28,33 @@ var simulation = d3.forceSimulation()
   .force('y', forceY)
   .force('collide', forceCollide)
 
+
 function doStuff(votes){
   console.log(votes);
-  createBubbles(votes);
+  iChooseYou(votes);
   simulation
       .force('x', forceX)
       .alphaTarget(strength)
       .restart()
+}
+
+function iChooseYou(votes) {
+  var evees = svg.selectAll('.evee')
+    .data(votes)
+    // .enter()
+    // .append('circle')
+    .attr('data-song', d => d.name.replace(/\s/g, ''))
+    .style('width', radius)
+    .style('height', radius)
+
+  simulation.nodes(votes)
+    .on('tick', ticked)
+
+  // Fires everytime on tick
+  function ticked() {
+    evees
+      .style('transform', d => 'translate(' + d.x + 'px,' + d.y + 'px)')
+  }
 }
 
 function createBubbles(votes) {
@@ -75,9 +96,8 @@ class Results extends Component {
   componentDidMount() {
     var votes = [];
     svg = d3.select('#visualization')
-      .attr('width', width)
-      .attr('height', height)
-      .attr('transform', 'translate(0,0)');
+      .style('width', width + 'px')
+      .style('height', height + 'px')
 
     this.props.songs.forEach((song,i)=>{
       var name = 'Song '+names[i];
@@ -118,14 +138,26 @@ class Results extends Component {
 
   render() {
     var circles = this.state.votes.map((vote,i)=>{
-      return (<circle className="bubble" key={i}></circle>);
+      return (
+        <div className="evee" key={i}></div>
+      );
     });
     return (
-      <svg id='visualization' className='bubbles'>
+      <div id='visualization'>
         {circles}
-      </svg>
+      </div>
     )
   }
 }
+
+// .attr('width', width)
+// .attr('height', height)
+// .attr('transform', 'translate(0,0)');
+
+// <circle className="bubble" key={i}></circle>
+
+// <svg id='visualization' className='bubbles'>
+//   {circles}
+// </svg>
 
 export default Results;

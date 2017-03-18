@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 
-import Results from './results.component.jsx';
+import Results from './evees.component.jsx';
 import SVGFilter from './svgFilter.component.jsx';
 import Song from './song.component.jsx';
 import socket from '../services/socketService.jsx';
 import Http from '../services/httpService.jsx';
+
+import {Link} from 'react-router';
 
 class DataVisuals extends Component {
 	constructor(){
@@ -48,7 +50,10 @@ class DataVisuals extends Component {
 		if (songs.length === 0) {
 			el = (
 				<div className="flex flex__center">
-					<h2>Preparing song battle...</h2>
+					<div className="flex__col center">
+						<h2>Preparing song battle...</h2>
+						<Link className="pure-button" to="/vote">Vote Now</Link>
+					</div>
 				</div>
 			)
 		} else {
@@ -63,7 +68,13 @@ class DataVisuals extends Component {
 
 			el = (
 				<div>
-					<h1>Fight!</h1>
+					<div className="flex">
+						<div className="flex__col center">
+							<h1>Fight!</h1>
+							<Link className="pure-button" to="/vote">Vote Now</Link>
+						</div>
+					</div>
+
 					<Results songs={this.state.songs} />
 					<div className="flex versus__container">
 						{ getSong[0] } <div>VS</div> { getSong[1] }
